@@ -1,0 +1,181 @@
+{
+    "configurations" : [
+      {
+	"hive-env" : {
+		"hive_txn_acid" : "on"
+	}
+      },
+      {
+        "hive-site": {
+		"javax.jdo.option.ConnectionPassword": "hive",
+		"hive.exec.compress.output": "true",
+		"hive.server2.enable.doAs" : "false",
+		"hive.merge.mapfiles": "true",
+		"hive.support.concurrency" : "true",
+		"hive.txn.manager" : "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager",
+		"hive.exec.dynamic.partition.mode" : "nonstrict",
+		"hive.enforce.bucketing" : "true",
+		"hive.compactor.worker.threads" : "1",
+		"hive.compactor.initiator.on" : "true"
+        }
+      },
+	{
+	   "hive-interactive-env" : {
+		"enable_hive_interactive" : "true",
+		"llap_queue_capacity" : "50"
+	   }
+	},
+	{
+	  "hive-interactive-site" : {
+		"hive.llap.daemon.queue.name" : "llap",
+		"hive.llap.io.enabled" : "true",
+		"hive.server2.tez.default.queues" : "llap",
+		"hive.execution.mode" : "llap",
+		"hive.llap.io.memory.mode" : "cache",
+		"hive.mapjoin.hybridgrace.hashtable" : "true"
+	  }
+	},
+	{
+	    "core-site": {
+		"hadoop.http.authentication.cookie.persistent" : "true"
+	    }
+	},
+	{
+	    "hdfs-site": {
+		"dfs.namenode.safemode.extension" : "1000"
+	     }
+	},
+        {
+            "hbase-env": {
+                "phoenix_sql_enabled" : "true"
+            }
+        },
+        {
+            "yarn-site": {
+                "yarn.node-labels.enabled" : "true",
+                "yarn.resourcemanager.scheduler.monitor.enable" : "true"
+            }
+        },
+	{
+	    "capacity-scheduler": {
+		"capacity-scheduler" : "yarn.scheduler.capacity.default.minimum-user-limit-percent=100\nyarn.scheduler.capacity.root.default.acl_administer_queue=yarn\nyarn.scheduler.capacity.root.default.maximum-capacity=50\nyarn.scheduler.capacity.root.accessible-node-labels=*\nyarn.scheduler.capacity.root.capacity=100\nyarn.scheduler.capacity.root.queues=default,llap\nyarn.scheduler.capacity.maximum-applications=10000\nyarn.scheduler.capacity.root.default.user-limit-factor=2\nyarn.scheduler.capacity.root.default.state=RUNNING\nyarn.scheduler.capacity.maximum-am-resource-percent=0.2\nyarn.scheduler.capacity.root.default.acl_submit_applications=yarn\nyarn.scheduler.capacity.root.default.capacity=50\nyarn.scheduler.capacity.root.acl_administer_queue=yarn\nyarn.scheduler.capacity.root.acl_administer_jobs=yarn\nyarn.scheduler.capacity.node-locality-delay=40\nyarn.scheduler.capacity.root.default.acl_administer_jobs=yarn\nyarn.scheduler.capacity.resource-calculator=org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator\nyarn.scheduler.capacity.root.llap.user-limit-factor=2\nyarn.scheduler.capacity.root.llap.state=RUNNING\nyarn.scheduler.capacity.root.llap.ordering-policy=fifo\nyarn.scheduler.capacity.root.llap.minimum-user-limit-percent=100\nyarn.scheduler.capacity.root.llap.maximum-capacity=50\nyarn.scheduler.capacity.root.llap.capacity=50\nyarn.scheduler.capacity.root.llap.acl_submit_applications=hive\nyarn.scheduler.capacity.root.llap.acl_administer_queue=hive\nyarn.scheduler.capacity.root.llap.maximum-am-resource-percent=1\n"
+	    }
+	},
+	{
+	    "mapred-site": {
+			"mapreduce.job.reduce.slowstart.completedmaps": "0.7",
+                        "mapreduce.map.output.compress": "true",
+                        "mapreduce.output.fileoutputformat.compress": "true"
+	    }
+	}
+    ],
+    "host_groups" : [
+        {
+            "name" : "all",
+            "components" : [
+                {
+                    "name" : "SLIDER"
+                },
+                {
+                    "name" : "PIG"
+                },
+                {
+                    "name" : "HISTORYSERVER"
+                },
+                {
+                    "name" : "NAMENODE"
+                },
+                {
+                    "name" : "HBASE_MASTER"
+                },
+                {
+                    "name" : "HBASE_REGIONSERVER"
+                },
+                {
+                    "name" : "PHOENIX_QUERY_SERVER"
+                },
+                {
+                    "name" : "HBASE_CLIENT"
+                },
+                {
+                    "name" : "HCAT"
+                },
+                {
+                    "name" : "WEBHCAT_SERVER"
+                },
+                {
+                    "name" : "AMBARI_SERVER"
+                },
+                {
+                    "name" : "APP_TIMELINE_SERVER"
+                },
+                {
+                    "name" : "HDFS_CLIENT"
+                },
+                {
+                    "name" : "HIVE_CLIENT"
+                },
+                {
+                    "name" : "NODEMANAGER"
+                },
+                {
+                    "name" : "DATANODE"
+                },
+                {
+                    "name" : "RESOURCEMANAGER"
+                },
+                {
+                    "name" : "ZOOKEEPER_SERVER"
+                },
+                {
+                    "name" : "ZOOKEEPER_CLIENT"
+                },
+                {
+                    "name" : "HIVE_SERVER"
+                },
+		{
+          	    "name" : "HIVE_SERVER_INTERACTIVE"
+        	},
+                {
+                    "name" : "METRICS_COLLECTOR"
+                },
+                {
+                    "name" : "METRICS_MONITOR"
+                },	
+        	{
+          	    "name" : "METRICS_GRAFANA"
+        	},
+                {
+                    "name" : "SECONDARY_NAMENODE"
+                },
+                {
+                    "name" : "TEZ_CLIENT"
+                },
+                {
+                    "name" : "HIVE_METASTORE"
+                },
+                {
+                    "name" : "SPARK_CLIENT"
+                },
+                {
+                    "name" : "SPARK_JOBHISTORYSERVER"
+                },
+                {
+                    "name" : "YARN_CLIENT"
+                },
+                {
+                    "name" : "MAPREDUCE2_CLIENT"
+                },
+                {
+                    "name" : "MYSQL_SERVER"
+                }
+            ],
+            "cardinality" : "1"
+        }
+    ],
+    "Blueprints" : {
+        "blueprint_name" : "singlenode",
+        "stack_name" : "HDP",
+        "stack_version" : "2.5"
+    }
+}

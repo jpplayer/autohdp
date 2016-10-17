@@ -1,0 +1,242 @@
+{
+    "configurations" : [
+      	{
+	"hst-server-conf" : {
+		"customer.account.name" : "Example, Inc.",
+		"customer.smartsense.id" : "A-00000000-C-00000000",
+		"customer.notification.email" : "no-reply@example.com",
+		"users.admin" : "admin"
+	   }
+	},
+	{
+	"hive-env" : {
+		"hive_txn_acid" : "on",
+		"hive_database" : "Existing MySQL Database",
+       		"hive_database_name" : "hive",
+          	"hive_database_type" : "mysql",
+         	"hive_ambari_database" : "MySQL",
+		"cost_based_optimizer" : "On"
+	}
+      },
+      {
+        "hive-site": {
+		"javax.jdo.option.ConnectionDriverName" : "com.mysql.jdbc.Driver",
+		"javax.jdo.option.ConnectionURL" : "jdbc:mysql://localhost/hive?createDatabaseIfNotExist=true",
+		"javax.jdo.option.ConnectionUserName" : "hive",
+		"javax.jdo.option.ConnectionPassword": "hive",
+		"hive.exec.compress.output": "true",
+		"hive.server2.enable.doAs" : "false",
+		"hive.merge.mapfiles": "true",
+		"hive.support.concurrency" : "true",
+		"hive.txn.manager" : "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager",
+		"hive.exec.dynamic.partition.mode" : "nonstrict",
+		"hive.enforce.bucketing" : "true",
+		"hive.compactor.worker.threads" : "1",
+		"hive.compactor.initiator.on" : "true"
+        }
+      },
+	{
+	    "core-site": {
+		"hadoop.http.authentication.cookie.persistent" : "true"
+	    }
+	},
+	{
+	    "hdfs-site": {
+		"dfs.namenode.safemode.extension" : "1000"
+	     }
+	},
+        {
+            "hbase-env": {
+                "phoenix_sql_enabled" : "true"
+            }
+        },
+        {
+            "yarn-site": {
+                "yarn.node-labels.enabled" : "true",
+                "yarn.resourcemanager.scheduler.monitor.enable" : "true"
+            }
+        },
+	{
+	    "mapred-site": {
+			"mapreduce.job.reduce.slowstart.completedmaps": "0.7",
+                        "mapreduce.map.output.compress": "true",
+                        "mapreduce.output.fileoutputformat.compress": "true"
+	    }
+	},
+	{
+                "ranger-env" : {
+                        "ranger-yarn-plugin-enabled" : "Yes",
+                        "ranger-hdfs-plugin-enabled" : "Yes",
+                        "ranger-hbase-plugin-enabled" : "Yes",
+                        "ranger-storm-plugin-enabled" : "No",
+                        "ranger-hive-plugin-enabled" : "Yes"
+                }
+	}
+    ],
+    "host_groups" : [
+        {
+            "name" : "master",
+            "components" : [
+                {
+                    "name" : "SLIDER"
+                },
+                {
+                    "name" : "PIG"
+                },
+                {
+                    "name" : "HISTORYSERVER"
+                },
+                {
+                    "name" : "NAMENODE"
+                },
+                {
+                    "name" : "HBASE_MASTER"
+                },
+                {
+                    "name" : "HBASE_REGIONSERVER"
+                },
+                {
+                    "name" : "PHOENIX_QUERY_SERVER"
+                },
+                {
+                    "name" : "HBASE_CLIENT"
+                },
+                {
+                    "name" : "HCAT"
+                },
+                {
+                    "name" : "WEBHCAT_SERVER"
+                },
+                {
+                    "name" : "AMBARI_SERVER"
+                },
+                {
+                    "name" : "APP_TIMELINE_SERVER"
+                },
+                {
+                    "name" : "HDFS_CLIENT"
+                },
+                {
+                    "name" : "HIVE_CLIENT"
+                },
+                {
+                    "name" : "NODEMANAGER"
+                },
+                {
+                    "name" : "DATANODE"
+                },
+                {
+                    "name" : "RESOURCEMANAGER"
+                },
+                {
+                    "name" : "ZOOKEEPER_SERVER"
+                },
+                {
+                    "name" : "ZOOKEEPER_CLIENT"
+                },
+                {
+                    "name" : "HIVE_SERVER"
+                },
+                {
+                    "name" : "METRICS_COLLECTOR"
+                },
+                {
+                    "name" : "METRICS_MONITOR"
+                },	
+        	{
+          	    "name" : "METRICS_GRAFANA"
+        	},
+                {
+                    "name" : "SECONDARY_NAMENODE"
+                },
+                {
+                    "name" : "TEZ_CLIENT"
+                },
+                {
+                    "name" : "HIVE_METASTORE"
+                },
+                {
+                    "name" : "SPARK_CLIENT"
+                },
+                {
+                    "name" : "SPARK_JOBHISTORYSERVER"
+                },
+                {
+                    "name" : "YARN_CLIENT"
+                },
+                {
+                    "name" : "MAPREDUCE2_CLIENT"
+                },
+		{
+          	    "name" : "RANGER_ADMIN"
+        	},
+		{
+          	    "name" : "RANGER_USERSYNC"
+		},
+		{
+          	    "name" : "ACTIVITY_ANALYZER"
+        	},
+        	{
+          	    "name" : "HST_SERVER"
+        	},
+        	{
+          	    "name" : "HST_AGENT"
+        	},
+ 		{
+          	    "name" : "ACTIVITY_EXPLORER"
+        	},
+        	{
+          	    "name" : "INFRA_SOLR_CLIENT"
+        	},
+        	{
+          	    "name" : "INFRA_SOLR"
+        	},
+		{
+          	    "name" : "KAFKA_BROKER"
+        	},
+        	{
+          	    "name" : "OOZIE_CLIENT"
+        	},
+        	{
+          	    "name" : "FALCON_CLIENT"
+        	},
+        	{
+          	    "name" : "FALCON_SERVER"
+        	},
+        {
+          "name" : "ATLAS_CLIENT"
+        },
+        {
+          "name" : "ATLAS_SERVER"
+        },
+
+        {
+          "name" : "LOGSEARCH_SERVER"
+        },
+        {
+          "name" : "LOGSEARCH_LOGFEEDER"
+        },
+
+        {
+          "name" : "ZEPPELIN_MASTER"
+        },
+        {
+          "name" : "SPARK_CLIENT"
+        },
+        {
+          "name" : "SPARK_JOBHISTORYSERVER"
+        },
+        {
+          "name" : "OOZIE_SERVER"
+        }
+
+            ],
+            "cardinality" : "1"
+        }
+    ],
+    "Blueprints" : {
+        "blueprint_name" : "singlenode",
+        "stack_name" : "HDP",
+        "stack_version" : "2.5"
+    }
+}

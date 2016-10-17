@@ -1,0 +1,71 @@
+{
+   "Configurations" : [
+	{ 
+		"hadoop-env" : {
+			"hadoop_heapsize" : "256",
+			"dtnode_heapsize" : "256m",
+			"namenode_heapsize" : "256m",
+			"nfsgateway_heapsize" : "256"
+		},
+		"yarn-env" : {
+			"apptimelineserver_heapsize" : "256",
+			"yarn_heapsize" : "256",
+			"resourcemanager_heapsize" : "256",
+			"nodemanager_heapsize" : "256"
+		},
+		"yarn-site" : {
+			"yarn.scheduler.minimum-allocation-mb" : "128",
+			"yarn.scheduler.maximum-allocation-mb" : "4096",
+			"yarn.nodemanager.resource.memory-mb" : "4096"	
+		},
+		"mapred-env" : {
+			"jobhistory_heapsize" : "256"
+		},
+		"mapred-site" : {
+			"mapreduce.map.memory.mb" : "1024",
+			"mapreduce.task.io.sort.mb" : "256",
+			"mapreduce.reduce.memory.mb" : "1024",
+			"yarn.app.mapreduce.am.resource.mb" : "1024",
+			"mapreduce.map.java.opts" : "-Xmx700m"
+		},
+		"hbase-env" : {
+			"hbase_master_heapsize" : "256m",
+			"hbase_regionserver_heapsize" : "256m"
+		},
+		"hbase-site" : {
+			"hbase.client.retries.number" : "1"
+		},
+		"hive-env" : {
+			"hive.metastore.heapsize" : "256",
+			"hive.client.heapsize" : "256",
+          		"hive.heapsize" : "256"
+		},
+		"hive-site" : {
+			"hive.tez.container.size" : "1024",
+			"hive.auto.convert.join.noconditionaltask.size" : "30000000"
+		},
+		"zookeeper-env" : {
+		},
+		"tez-site" : {
+			"tez.am.resource.memory.mb" : "1024",
+			"tez.runtime.io.sort.mb" : "256",
+          		"tez.task.resource.memory.mb" : "1024",
+			"tez.runtime.unordered.output.buffer.size-mb" : "64"
+		},
+		"spark-env" : {
+			"spark_daemon_memory" : "1024"
+		},
+		"ams-env" : {
+			"metrics_collector_heapsize" : "256"
+		},
+		"ams-hbase-env" : {
+			"hbase_master_maxperm_size" : "64",
+          		"regionserver_xmn_size" : "96",
+          		"hbase_master_heapsize" : "256",
+			"hbase_regionserver_heapsize" : "256",
+          		"hbase_master_xmn_size" : "64"
+		}
+	}
+  ]	
+}
+
