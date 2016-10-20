@@ -48,7 +48,7 @@ shadowLastChange: 0
 shadowMax: 0
 shadowWarning: 0
 
-dn: cn=users,ou=groups,dc=field,dc=hortonworks,dc=com
+dn: cn=users,ou=groups,${LDAP_BASE}
 changetype: modify
 add: memberUid
 memberUid: ${USERNAME}
