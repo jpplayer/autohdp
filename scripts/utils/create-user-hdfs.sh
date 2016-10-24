@@ -8,5 +8,5 @@ fi
 USERNAME=$1
 echo "Creating /user/${USERNAME} folder in HDFS."
 su hdfs -c "hdfs dfs -mkdir -p /user/${USERNAME}"
-su hdfs -c "hdfs dfs -chown admin /user/${USERNAME}"
+su hdfs -c "hdfs dfs -chown ${USERNAME} /user/${USERNAME}"
 
