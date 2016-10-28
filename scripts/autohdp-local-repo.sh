@@ -110,17 +110,18 @@ EOF
 cp /etc/yum.repos.d/ambari.repo /var/www/html/repo/ambari/ambari.repo
 
 # Create repo file for hdp.
-cat > /var/www/html/repo/hdp.repo << EOF
+cat > /etc/yum.repos.d/hdp.repo << EOF
 [hdp]
 name=hdp
 gpgcheck=0
-base_url=http://${REPO_SERVER}/repo/hdp
+baseurl=http://${REPO_SERVER}/repo/hdp
 
 [hdp-utils]
 name=hdp-utils
 gpgcheck=0
-base_url=http://${REPO_SERVER}/repo/hdp-utils
+baseurl=http://${REPO_SERVER}/repo/hdp-utils
 EOF
+cp /etc/yum.repos.d/hdp.repo /var/www/html/repo/hdp.repo
 
 #echo "Use the following URLs for the HDP and HDP-UTILS repositories:"
 #echo "http://`hostname -f`/repo/ambari"

@@ -260,6 +260,7 @@ rm -rf "$bak"
 ' > /etc/cron.daily/ambari-backup
 chmod 750 /etc/cron.daily/ambari-backup
 # Ranger is still rough, needs own script
+# Installs mysql, which requires HDP-UTILS
 scripts/autohdp-prepare-ranger.sh
 
 # Start ambari

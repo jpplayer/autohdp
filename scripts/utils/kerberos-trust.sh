@@ -29,7 +29,6 @@ kadmin.local -q "addprinc -pw '${TRUST_PASSWORD}' krbtgt/${LOCAL_REALM}@${REMOTE
 kadmin -r "${REMOTE_REALM}" -p "${REMOTE_USER}" -w "${REMOTE_PASS}" -q "addprinc -pw '${TRUST_PASSWORD}' krbtgt/${LOCAL_REALM}@${REMOTE_REALM}"
 
 # Call Ambari to adjust auth-to-local
-# RULE:[1:$1@$0](.*@FIELD.HORTONWORKS.COM)s/@.*//
 /var/lib/ambari-server/resources/scripts/configs.sh get localhost ${CLUSTERNAME} core-site hadoop.security.auth_to_local 
 AUTH_TO_LOCAL=$( /var/lib/ambari-server/resources/scripts/configs.sh get localhost ${CLUSTERNAME} core-site | tail -n +2 | xargs -0 -I XX echo '{' XX  '}' | jq -r '.properties."hadoop.security.auth_to_local"' )
 AUTH_REPLACE=$( echo 'RULE:[1:$1@$0](.*@'${REMOTE_REALM}')s/@.*// '"$AUTH_TO_LOCAL" | tr ' ' '\n' )
