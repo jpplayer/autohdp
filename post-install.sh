@@ -7,7 +7,8 @@ ENV_VARIABLES=tmp/variables.sh
 # TODO
 
 # Create admin user
-scripts/utils/create-user.sh admin admin ${REALM} ${PW_LDAP}
+scripts/utils/create-user-kdc-ldap.sh admin admin ${REALM} ${PW_LDAP}
+scripts/utils/create-user-hdfs.sh admin
 
 # Wait for HBase to be running
 # TODO
