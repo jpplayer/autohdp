@@ -13,8 +13,8 @@ cd tmp
 curl -s "${HDP_REPO}" -o hdp.repo
 
 # WARNING: This works as long as HDP comes *before* HDP-UTILS
-BASE_HDP=$(awk -F= '/^\[*hdp*\]/{f=1} f==1&&/^base_url/{print $2;exit}' hdp.repo)
-BASE_UTILS=$(awk -F= '/^\[*hdp-utils*\]/{f=1} f==1&&/^base_url/{print $2;exit}' hdp.repo)
+BASE_HDP=$(awk -F= '/^\[*hdp*\]/{f=1} f==1&&/^baseurl/{print $2;exit}' hdp.repo)
+BASE_UTILS=$(awk -F= '/^\[*hdp-utils*\]/{f=1} f==1&&/^baseurl/{print $2;exit}' hdp.repo)
 
 cat > hdp.repo.json << EOF
 {
