@@ -9,8 +9,17 @@ if [[ -z $3 ]]; then
 fi
 
 set +x
-
-. functions.sh
+function getDir() {
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+echo $DIR
+}
+. `getDir`/functions.sh
 
 
 BLUEPRINT_BASE=$1
@@ -33,7 +42,7 @@ function runcommand() {
    OUTPUT=$( $COMMAND 2> /dev/null )
    echo "$OUTPUT"
    STATUS=$( echo "$OUTPUT" | jq '.status' | tr -d '"' )
-   if [[ "$STATUS" != "200" ]]; then echo "Error. Exiting."; exit 1; fi	
+   #if [[ "$STATUS" != "200" ]]; then echo -e "Error running $COMMAND: \n$OUTPUT. \nExiting."; exit 1; fi	
 }
 
 COMMAND="curl --user admin:admin -H X-Requested-By:autohdp -X PUT http://localhost:8080/api/v1/stacks/HDP/versions/${HDP_VERSION_SHORT}/operating_systems/${OS}/repositories/HDP-${HDP_VERSION_SHORT} -d @$DIR/../tmp/hdp.repo.json"
