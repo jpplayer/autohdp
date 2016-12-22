@@ -48,8 +48,7 @@ HDP_VERSION="$1"
 
 # Supplying a version number is required. When using custom repo, specify the first two digits.
 if [[ "$HDP_VERSION"X == X ]]; then
-	usage
-	exit 1
+	HDP_VERSION="2.5"
 fi
 
 if [[ ! "$HDPREPO"X == X && "$AMBARIREPO"X == X ]]; then
