@@ -59,7 +59,7 @@ fi
 # Redhat version
 OS_VERSION=$( get_os_version )
 if [[ "${OS_VERSION}"X == X ]]; then
-   echo "Couldn't determine OS". Aborting.
+   echo "Couldn't determine OS or OS not supported. Only CentOS and RHEL v6 or v7 supported.". Aborting.
    exit 1
 fi
 
