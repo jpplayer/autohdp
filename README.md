@@ -30,6 +30,9 @@ Other syntax
 A specific version can be specified. 
 
 ```bash
+# Pick latest 2.5.x version
+./autohdp.sh 2.5
+# Pick latest 2.4.2.x version
 ./autohdp.sh 2.4.2
 ```
 
