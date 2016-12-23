@@ -27,7 +27,7 @@ The command will complete once Ambari has acknowledged the cluster creation requ
 
 Other syntax
 ------
-A specific version can be specified. 
+A specific version can be specified. If all 4 version slots are not specified, the latest will be selected.
 
 ```bash
 # Pick latest 2.5.x version
