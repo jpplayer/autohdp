@@ -1,11 +1,12 @@
 #!/bin/bash
-# version 0.3
+# version 0.4
 set +x
 
 ME=${0##*/}
 
 AMBARIREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/ambari/2.4.0.0-4/centos6/ambari.repo"
 HDPREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/2.5.0.0-4/centos6/hdp.repo"
+LATEST_HDP="2.5"
 
 KNOWN_REPOS=repos/known_repos.txt
 ENV_VARIABLES=tmp/variables.sh
@@ -26,7 +27,7 @@ Options:
 	-h			displays help
 
 Example: 
-	$ME 2.5
+	$ME $LATEST_HDP
 "
 }
 
@@ -48,7 +49,7 @@ HDP_VERSION="$1"
 
 # Supplying a version number is required. When using custom repo, specify the first two digits.
 if [[ "$HDP_VERSION"X == X ]]; then
-	HDP_VERSION="2.5"
+	HDP_VERSION="$LATEST_HDP"
 fi
 
 if [[ ! "$HDPREPO"X == X && "$AMBARIREPO"X == X ]]; then
