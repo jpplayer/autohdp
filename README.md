@@ -20,8 +20,8 @@ Quick Start
 Spin up a virtual machine and clone autohdp. You can specify a known GA version of Ambari and HDP or provide custom repo links. If specified, the version must be listed under (repos/known_repos.txt).
 
 ```bash
-# Install the latest version of HDP 2.4
-./autohdp.sh 2.4
+# Install the latest version of HDP (2.5 as of 12/16)
+./autohdp.sh
 ```
 The command will complete once Ambari has acknowledged the cluster creation request.
 
