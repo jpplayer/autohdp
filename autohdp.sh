@@ -1,5 +1,4 @@
 #!/bin/bash
-# version 0.4
 set +x
 
 ME=${0##*/}
@@ -145,6 +144,9 @@ echo "CLUSTERNAME=$CLUSTERNAME"
 echo "REALM=$REALM"
 echo "CREATE LOCAL REPOSITORY=$LOCALREPO"
 echo "OS VERSION=$OS_VERSION"
+# Check the URLs
+curl --output /dev/null --silent --head --fail "$AMBARIREPO" || (echo "WARN: issue loading url $AMBARIREPO")
+curl --output /dev/null --silent --head --fail "$HDPREPO" || (echo "WARN: issue loading url $HDPREPO.")
 echo "Press a key to continue"
 read -n 1
 
