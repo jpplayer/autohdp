@@ -69,7 +69,8 @@
 	},
 	{
             "ranger-env" : {
-		"ranger_admin_password" : "admin",	
+		"ranger_admin_password" : "admin",
+		"is_solrCloud_enabled" : "true",
                 "ranger-yarn-plugin-enabled" : "Yes",
                 "ranger-hdfs-plugin-enabled" : "Yes",
                 "ranger-hbase-plugin-enabled" : "Yes",
@@ -81,47 +82,7 @@
 	   "admin-properties" : {
 		"db_host" : "localhost"
 	   }
-	},
-	{
-	   "ranger-admin-site" : {
-		"ranger.audit.solr.urls" : "http://localhost:6083/solr/ranger_audit"
-	   }
-	},
-	{
-	   "ranger-kafka-audit" : {
-		"xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
-	   }
-	},
-        {
-           "ranger-kafka-audit" : {
-                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
-           }
-        },
-        {
-           "ranger-hive-audit" : {
-                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
-           }
-        },
-        {
-           "ranger-atlas-audit" : {
-                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
-           }
-        },
-        {
-           "ranger-hbase-audit" : {
-                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
-           }
-        },
-        {
-           "ranger-hdfs-audit" : {
-                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
-           }
-        },
-        {
-           "ranger-yarn-audit" : {
-                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
-           }
-        },
+	},	
 	{
 	  "kms-properties" : {
 		"KMS_MASTER_KEY_PASSWD" : "admin",
