@@ -121,7 +121,12 @@
            "ranger-yarn-audit" : {
                 "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
            }
-        }
+        },
+	{
+	  "kms-properties" : {
+		"KMS_MASTER_KEY_PASSWD" : "admin"
+	  }
+	}
     ],
     "host_groups" : [
         {
