@@ -4,7 +4,11 @@
 	"hst-server-conf" : {
 		"customer.account.name" : "Example, Inc.",
 		"customer.smartsense.id" : "A-00000000-C-00000000",
-		"customer.notification.email" : "no-reply@example.com",
+		"customer.notification.email" : "no-reply@example.com"
+	   }
+	},
+	{
+	"activity-zeppelin-shiro" : {
 		"users.admin" : "admin"
 	   }
 	},
