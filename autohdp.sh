@@ -199,8 +199,8 @@ EOF
 
 # If this fails, we are using a public repo with LOCALREPO=false, and ambari will download the necessary files later.
 mkdir -p /var/lib/ambari-server/resources
-wget http://${REPO_SERVER}/resources/jdk-8u60-linux-x64.tar.gz -O /var/lib/ambari-server/resources/jdk-8u60-linux-x64.tar.gz
-wget http://${REPO_SERVER}/resources/jce_policy-8.zip -O /var/lib/ambari-server/resources/jce_policy-8.zip
+wget -nc http://${REPO_SERVER}/resources/jdk-8u60-linux-x64.tar.gz -O /var/lib/ambari-server/resources/jdk-8u60-linux-x64.tar.gz
+wget -nc http://${REPO_SERVER}/resources/jce_policy-8.zip -O /var/lib/ambari-server/resources/jce_policy-8.zip
 
 # Install Ambari
 yum -y install ambari-server
