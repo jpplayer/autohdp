@@ -237,6 +237,7 @@ ambari-server setup-ldap \
 --ldap-dn=dn \
 --ldap-referral=ignore \
 --ldap-bind-anonym=true \
+--ldap-sync-username-collisions-behavior=convert \
 --ldap-save-settings
 
 # Configure LDAP sync
@@ -288,7 +289,7 @@ done
 scripts/autohdp-install-cluster.sh singlenode "${CLUSTERNAME}" "$HDP_VERSION_SHORT" "1.1.0.21"
 
 echo ""
-echo -e "Ambari is reachable at \033[1mhttp://${AMBARI_SERVER}:8080\033[0m"
+echo -e "Ambari is reachable at \033[1mhttp://${AMBARI_SERVER}:8080\033[0m (admin/admin)"
 echo "Hint: On Mac, click the Ambari link while pressing cmd."
 echo -e "Run \033[1;32mpost-install.sh\033[0m once the cluster is installed."
 

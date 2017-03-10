@@ -42,6 +42,13 @@ fi
 
 echo "Creating a local repository"
 
+# Exit early if a local repo already exists
+# TODO: be more thorough in checking
+if [[ -f /var/www/html/repo/ambari/ambari.repo ]]; then
+	echo "Local repo already exists: /var/www/html/repo/ambari/ambari.repo is present. Skipping."
+	exit 0
+fi
+
 function checkTools() {
 	local missing=""
 	if ! type "jq" > /dev/null 2>&1; then

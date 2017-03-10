@@ -124,7 +124,12 @@
         },
 	{
 	  "kms-properties" : {
-		"KMS_MASTER_KEY_PASSWD" : "admin"
+		"KMS_MASTER_KEY_PASSWD" : "admin",
+		"DB_FLAVOR" : "MYSQL",
+		"db_host" : "localhost:3306",
+		"db_name" : "rangerkms",
+		"db_password" : "admin",
+		"db_root_password" : "admin"
 	  }
 	}
     ],
