@@ -224,6 +224,9 @@
           	    "name" : "RANGER_USERSYNC"
 		},
 		{
+		    "name" : "RANGER_KMS_SERVER"
+		},
+		{
           	    "name" : "ACTIVITY_ANALYZER"
         	},
         	{
