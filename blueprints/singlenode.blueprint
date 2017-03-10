@@ -69,18 +69,59 @@
 	},
 	{
             "ranger-env" : {
-                        "ranger-yarn-plugin-enabled" : "Yes",
-                        "ranger-hdfs-plugin-enabled" : "Yes",
-                        "ranger-hbase-plugin-enabled" : "Yes",
-                        "ranger-storm-plugin-enabled" : "No",
-                        "ranger-hive-plugin-enabled" : "Yes"
-                }
+		"ranger_admin_password" : "admin",	
+                "ranger-yarn-plugin-enabled" : "Yes",
+                "ranger-hdfs-plugin-enabled" : "Yes",
+                "ranger-hbase-plugin-enabled" : "Yes",
+                "ranger-storm-plugin-enabled" : "No",
+                "ranger-hive-plugin-enabled" : "Yes"
+             }
 	},
 	{
 	   "admin-properties" : {
 		"db_host" : "localhost"
 	   }
-	}
+	},
+	{
+	   "ranger-admin-site" : {
+		"ranger.audit.solr.urls" : "http://localhost:6083/solr/ranger_audit"
+	   }
+	},
+	{
+	   "ranger-kafka-audit" : {
+		"xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
+	   }
+	},
+        {
+           "ranger-kafka-audit" : {
+                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
+           }
+        },
+        {
+           "ranger-hive-audit" : {
+                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
+           }
+        },
+        {
+           "ranger-atlas-audit" : {
+                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
+           }
+        },
+        {
+           "ranger-hbase-audit" : {
+                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
+           }
+        },
+        {
+           "ranger-hdfs-audit" : {
+                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
+           }
+        },
+        {
+           "ranger-yarn-audit" : {
+                "xasecure.audit.destination.solr.urls" : "http://localhost:6083/solr/ranger_audits"
+           }
+        }
     ],
     "host_groups" : [
         {
