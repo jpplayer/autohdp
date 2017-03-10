@@ -68,13 +68,18 @@
 	    }
 	},
 	{
-                "ranger-env" : {
+            "ranger-env" : {
                         "ranger-yarn-plugin-enabled" : "Yes",
                         "ranger-hdfs-plugin-enabled" : "Yes",
                         "ranger-hbase-plugin-enabled" : "Yes",
                         "ranger-storm-plugin-enabled" : "No",
                         "ranger-hive-plugin-enabled" : "Yes"
                 }
+	},
+	{
+	   "admin-properties" : {
+		"db_host" : "localhost"
+	   }
 	}
     ],
     "host_groups" : [
