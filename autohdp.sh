@@ -46,9 +46,11 @@ done
 shift $((OPTIND-1))
 HDP_VERSION="$1"
 
-# Supplying a version number is required. When using custom repo, specify the first two digits.
+# Supplying a version number is required. When using custom repo, specify all four digits.
 if [[ "$HDP_VERSION"X == X ]]; then
+	echo "Missing HDP version"
 	usage
+	exit 1
 fi
 
 if [[ ! "$HDPREPO"X == X && "$AMBARIREPO"X == X ]]; then
@@ -109,9 +111,16 @@ if [[ "$CLUSTERNAME"X == X ]]; then
 fi
 
 # Resolve to full and short version
-HDP_VERSION_FULL=$( get_full_resolved_version $HDP_VERSION )
+if [[ "$HDPREPO"X == X ]]; then
+	HDP_VERSION_FULL=$( get_full_resolved_version $HDP_VERSION )
+else
+	HDP_VERSION_FULL=$HDP_VERSION
+fi
 HDP_VERSION_SHORT=$( echo $HDP_VERSION_FULL | awk 'match( $0, /[0-9]+\.[0-9]+/, arr ) {print arr[0]}' )
-AMBARI_VERSION_FULL=$( get_hdp_recommended_ambari $HDP_VERSION_FULL  )
+
+if [[ "$AMBARIREPO"X == X ]]; then
+	AMBARI_VERSION_FULL=$( get_hdp_recommended_ambari $HDP_VERSION_FULL  )
+fi
 
 # Always use a repo manually supplied. Otherwise we get it from our known repo list.
 if [[ "$HDPREPO"X == X ]]; then
@@ -144,6 +153,8 @@ echo "CLUSTERNAME=$CLUSTERNAME"
 echo "REALM=$REALM"
 echo "CREATE LOCAL REPOSITORY=$LOCALREPO"
 echo "OS VERSION=$OS_VERSION"
+echo "AMBARI VERSION=$AMBARI_VERSION_FULL"
+echo "HDP VERSION SHORT=$HDP_VERSION"
 # Check the URLs
 curl --output /dev/null --silent --head --fail "$AMBARIREPO" || (echo "WARN: issue loading url $AMBARIREPO")
 curl --output /dev/null --silent --head --fail "$HDPREPO" || (echo "WARN: issue loading url $HDPREPO.")
