@@ -15,7 +15,7 @@ LOCALREPO="true"
 . scripts/functions.sh
 
 function usage(){
-  echo "Automates HDP installation."
+  echo "Automates HDP installation on a single node."
   echo "Usage: $ME hdp_version
 Options:
 	hdp_version		Version of HDP you want to install, see repos/known_versions.txt. Can be shortened eg '2.5'.
@@ -48,7 +48,7 @@ HDP_VERSION="$1"
 
 # Supplying a version number is required. When using custom repo, specify the first two digits.
 if [[ "$HDP_VERSION"X == X ]]; then
-	HDP_VERSION="$LATEST_HDP"
+	usage
 fi
 
 if [[ ! "$HDPREPO"X == X && "$AMBARIREPO"X == X ]]; then
