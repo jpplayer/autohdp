@@ -154,7 +154,7 @@ echo "REALM=$REALM"
 echo "CREATE LOCAL REPOSITORY=$LOCALREPO"
 echo "OS VERSION=$OS_VERSION"
 echo "AMBARI VERSION=$AMBARI_VERSION_FULL"
-echo "HDP VERSION SHORT=$HDP_VERSION"
+echo "HDP VERSION SHORT=$HDP_VERSION_SHORT"
 # Check the URLs
 curl --output /dev/null --silent --head --fail "$AMBARIREPO" || (echo "WARN: issue loading url $AMBARIREPO")
 curl --output /dev/null --silent --head --fail "$HDPREPO" || (echo "WARN: issue loading url $HDPREPO.")
@@ -235,8 +235,8 @@ fi
 
 # Configure LDAP for Ambari. This adds the configuration to /etc/ambari-server/conf/ambari.properties
 ambari-server setup-ldap \
---ldap-url=localhost:389 \
---ldap-secondary-url=localhost:389 \
+--ldap-url=$FQDN:389 \
+--ldap-secondary-url=$FQDN:389 \
 --ldap-ssl=false \
 --ldap-user-attr=uid \
 --ldap-user-class=posixAccount \
@@ -254,7 +254,7 @@ ambari-server setup-ldap \
 # Configure LDAP sync
 cat > /etc/cron.hourly/ambari-sync-ldap << EOF
 #!/bin/sh
-curl -u 'admin:admin' -H 'X-Requested-By: ambari' -X POST -d '[{"Event": {"specs": [{"principal_type": "users", "sync_type": "all"}, {"principal_type": "groups", "sync_type": "all"}]}}]' http://localhost:8080/api/v1/ldap_sync_events
+curl -u 'admin:admin' -H 'X-Requested-By: ambari' -X POST -d '[{"Event": {"specs": [{"principal_type": "users", "sync_type": "all"}, {"principal_type": "groups", "sync_type": "all"}]}}]' http://$FQDN:8080/api/v1/ldap_sync_events
 EOF
 chmod 750 /etc/cron.hourly/ambari-sync-ldap
 
