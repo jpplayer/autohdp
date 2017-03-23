@@ -12,6 +12,6 @@ hdp	2.5.0.0	centos7	http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates
 ambari  2.4.2.0 centos7	http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.4.2.0/ambari.repo
 hdp     2.5.3.0 centos7 http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.5.3.0/hdp.repo 2.4.2.0
 
-ambari	2.5.0.0-1094	centos7	http://private-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.5.0.0-1094/ambari.repo
-hdp	2.6.0.0-598	centos7	http://private-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.0.0-598/hdp.repo 2.5.0.0-1094
+ambari	2.5.0.0-1096	centos7	http://private-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.5.0.0-1096/ambari.repo
+hdp	2.6.0.0-598	centos7	http://private-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.0.0-598/hdp.repo 2.5.0.0-1096
 
