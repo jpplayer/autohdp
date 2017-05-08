@@ -182,6 +182,7 @@ scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
 
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
+# Also creates a local repo for misc files like BerkeleyDB jar for Falcon.
  scripts/autohdp-local-repo.sh -a "$AMBARIREPO" -b "$HDPREPO"
  # Now fill out variables
  REPO_SERVER="$FQDN"
@@ -193,6 +194,11 @@ url = urlparse('$HDPREPO')
 print url.netloc" )
  wget ${AMBARIREPO} -O /etc/yum.repos.d/ambari.repo
 fi
+
+# Add BDB jar for Falcon
+wget http://search.maven.org/remotecontent?filepath=com/sleepycat/je/5.0.73/je-5.0.73.jar -O /usr/share/je-5.0.73.jar
+chmod 644 /usr/share/je-5.0.73.jar
+ambari-server setup --jdbc-db=bdb --jdbc-driver=/usr/share/je-5.0.73.jar
 
 # Generate repo snippets in JSON format for Ambari
 scripts/autohdp-ambari-repos.sh "$HDPREPO"
