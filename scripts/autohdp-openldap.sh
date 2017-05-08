@@ -196,14 +196,15 @@ service slapd restart
 
 # Complete. Optional steps now.
 
-# Create test user
-PW_TEST=test
-kadmin.local -q "addprinc -pw ${PW_TEST} test@${REALM}"
-
 # BGIN DISABLED SECTION
 # Disable this section: it conflicts with Ambari
 # which then starts creating hadoop users with an id > 2000
 if false; then
+
+# Create test user
+PW_TEST=test
+kadmin.local -q "addprinc -pw ${PW_TEST} test@${REALM}"
+
 cat > /tmp/ldap/test.ldif << EOF
 dn: uid=test,ou=users,dc=hadoop,dc=io
 objectClass: top

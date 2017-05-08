@@ -169,14 +169,14 @@ service iptables stop
 setenforce 0
 
 # Install Kerberos. This is a good test that the system is working.
-echo "Setting up Kerberos."
+echo "AUTOHDP: Setting up Kerberos."
 scripts/autohdp-kerberos.sh "$REALM" "$KDC" 
-echo "Kerberos installation complete."
-echo "Setting up OpenLDAP."
+echo "AUTODHP: Kerberos installation complete."
+echo "AUTOHDP: Setting up OpenLDAP."
 scripts/autohdp-openldap.sh "$REALM" "$KDC"
-echo "OpenLDAP installation complete."
+echo "AUTOHDP: OpenLDAP installation complete."
 # Bind the node to LDAP and KDC for SSH and identity management
-echo "Joining node to LDAP and KDC domain"
+echo "AUTOHDP: Joining node to LDAP and KDC domain"
 scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
 
 
