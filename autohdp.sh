@@ -171,6 +171,8 @@ setenforce 0
 # Install Kerberos. This is a good test that the system is working.
 scripts/autohdp-kerberos.sh "$REALM" "$KDC" 
 scripts/autohdp-openldap.sh "$REALM" "$KDC"
+# Bind the node to LDAP and KDC for SSH and identity management
+scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
 
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo

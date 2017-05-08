@@ -226,9 +226,12 @@ ldapadd -f /tmp/ldap/test.ldif -D cn=Manager,dc=hadoop,dc=io -w "${PW_LDAP}"
 # Verify that SASL and LDAP work.
 testsaslauthd -u test@${REALM} -p ${PW_TEST}
 ldapsearch -D 'uid=test,ou=users,dc=hadoop,dc=io' -b dc=hadoop,dc=io -w ${PW_TEST}
+
 fi
 # END DISABLED SECTION
 
+# DISABLED
+if false; then
 # Configure local machine to use LDAP for identity but not PAM
 # Requires nslcd. To use SSSD, at least one PAM method is required but we disable all.
 # nslcd: requires nss-pam-ldapd
@@ -251,6 +254,7 @@ authconfig \
 
 # DISABLED
 # id 'test'
+fi
 
 # Clean up: delete test principal and ldap entry
 # TODO
