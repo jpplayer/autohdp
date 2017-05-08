@@ -5,7 +5,7 @@ ME=${0##*/}
 
 AMBARIREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/ambari/2.4.0.0-4/centos6/ambari.repo"
 HDPREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/2.5.0.0-4/centos6/hdp.repo"
-LATEST_HDP="2.5"
+LATEST_HDP="2.6"
 
 KNOWN_REPOS=repos/known_repos.txt
 ENV_VARIABLES=tmp/variables.sh
@@ -169,10 +169,16 @@ service iptables stop
 setenforce 0
 
 # Install Kerberos. This is a good test that the system is working.
+echo "Setting up Kerberos."
 scripts/autohdp-kerberos.sh "$REALM" "$KDC" 
+echo "Kerberos installation complete."
+echo "Setting up OpenLDAP."
 scripts/autohdp-openldap.sh "$REALM" "$KDC"
+echo "OpenLDAP installation complete."
 # Bind the node to LDAP and KDC for SSH and identity management
+echo "Joining node to LDAP and KDC domain"
 scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
+
 
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
