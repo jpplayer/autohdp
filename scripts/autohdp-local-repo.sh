@@ -130,6 +130,7 @@ baseurl=http://${REPO_SERVER}/repo/hdp-utils
 EOF
 cp /etc/yum.repos.d/hdp.repo /var/www/html/repo/hdp.repo
 
+
 #echo "Use the following URLs for the HDP and HDP-UTILS repositories:"
 #echo "http://`hostname -f`/repo/ambari"
 #echo "http://`hostname -f`/repo/hdp"
