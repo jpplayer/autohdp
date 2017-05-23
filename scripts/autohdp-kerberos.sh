@@ -73,11 +73,21 @@ cat > /etc/krb5.conf << EOF
 
 EOF
 
+# Increase entropy
+cat > /usr/lib/systemd/system/rngd.service << EOF
+[Unit]
+Description=Hardware RNG Entropy Gatherer Daemon
+[Service]
+ExecStart=/sbin/rngd -f -u /dev/urandom
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
 service rngd start
+
+# Create kerberos realm
 kdb5_util create -s -P ${PW_MASTER}
 kadmin.local -q "addprinc -pw ${PW_ADMIN} admin/admin"
-# Principal for the Ambari admin user. Currently 'admin' but later replace with 'ambari'
-# kadmin.local -q "addprinc -pw admin admin"
 service krb5kdc start
 service kadmin start
 
