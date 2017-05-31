@@ -84,8 +84,9 @@ ExecStart=/sbin/rngd -f -u /dev/urandom
 WantedBy=multi-user.target
 EOF
 systemctl daemon-reload
-service rngd start
 fi
+
+service rngd start
 
 # Create kerberos realm
 kdb5_util create -s -P ${PW_MASTER}
