@@ -74,6 +74,7 @@ cat > /etc/krb5.conf << EOF
 EOF
 
 # Increase entropy
+if false; then
 cat > /usr/lib/systemd/system/rngd.service << EOF
 [Unit]
 Description=Hardware RNG Entropy Gatherer Daemon
@@ -84,6 +85,7 @@ WantedBy=multi-user.target
 EOF
 systemctl daemon-reload
 service rngd start
+fi
 
 # Create kerberos realm
 kdb5_util create -s -P ${PW_MASTER}
