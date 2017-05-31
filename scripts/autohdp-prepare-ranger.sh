@@ -11,7 +11,9 @@ service mysql start
 mysql -u root --password=admin << EOF
 create database hive;
 create user 'hive'@'%' identified by 'hive';
-grant all privileges on *.* to 'hive'@'%' with grant option;
+grant all privileges on hive.* to 'hive'@'%' with grant option;
+create user 'hive'@'localhost' identified by 'hive';
+grant all privileges on hive.* to 'hive'@'localhost' with grant option;
 flush privileges;
 EOF
 
