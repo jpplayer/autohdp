@@ -189,7 +189,7 @@ scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
 # Also creates a local repo for misc files like BerkeleyDB jar for Falcon.
- scripts/autohdp-local-repo.sh -a "$AMBARIREPO" -b "$HDPREPO"
+ scripts/autohdp-local-repo.sh -a "$AMBARIREPO" -b "$HDPREPO" || exit $?
  # Now fill out variables
  REPO_SERVER="$FQDN"
  AMBARIREPO="http://${REPO_SERVER}/repo/ambari/ambari.repo"
