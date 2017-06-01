@@ -152,6 +152,9 @@ fi
 # Check that the node has an FQDN
 FQDN=$(hostname -f)  || (echo "Error: this host is not configured with an fqdn" && exit 1)
 
+# Clean up any existing repos
+rm -f /etc/yum.repos.d/ambari* /etc/yum.repos.d/hdp* /etc/yum.repos.d/HDP*
+
 # Kerberos
 REALM="${CLUSTERNAME^^}"
 KDC="$FQDN"
@@ -196,7 +199,6 @@ echo "AUTOHDP: OpenLDAP installation complete."
 # Bind the node to LDAP and KDC for SSH and identity management
 echo "AUTOHDP: Joining node to LDAP and KDC domain"
 scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
-
 
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
