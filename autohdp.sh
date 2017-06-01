@@ -15,7 +15,7 @@ LOCALREPO="true"
 . scripts/functions.sh
 
 function usage(){
-  echo "Automates HDP installation on a single node."
+  echo "Automates HDP installation on a single node. GA version is selected unless -d is specified."
   echo "Usage: $ME hdp_version
 Options:
 	hdp_version		Version of HDP you want to install, see repos/known_versions.txt. Can be shortened eg '2.5'.
@@ -23,6 +23,7 @@ Options:
 	-b hdp_repo		URL to HDP repository. Can be placed in HDPREPO variable.
 	-n cluster_name		Name of the cluster. Can be placed in CLUSTERNAME variable.
 	-s			Skip local repo creation. 
+	-d			Use development release.
 	-h			displays help
 
 Example: 
@@ -30,12 +31,14 @@ Example:
 "
 }
 
-while getopts ":a:b:n:hs" opt; do
+DEVEL="false"
+while getopts ":a:b:n:hsd" opt; do
 	case $opt in
 		a  ) AMBARIREPO=${OPTARG};;
 		b  ) HDPREPO=${OPTARG};;
 		n  ) CLUSTERNAME=${OPTARG};;
 		s  ) LOCALREPO="false";;
+		d  ) DEVEL="true";;
 		h  ) usage; exit 0;;
 		\? ) echo "Invalid option: -$OPTARG" >&2; usage; exit 1;;
 		:  ) echo "Option -$OPTARG requires an argument." >&2; usage; exit 1;;
@@ -54,7 +57,7 @@ if [[ "$HDP_VERSION"X == X ]]; then
 fi
 
 if [[ ! "$HDPREPO"X == X && "$AMBARIREPO"X == X ]]; then
-	echo "Warning: HDP Repo provided but no Ambari repo. Latest known version of Ambari will be selected."
+	echo "Warning: HDP Repo provided but no Ambari repo. Latest known GA version of Ambari will be selected."
 fi
 
 # Redhat version
@@ -65,12 +68,14 @@ if [[ "${OS_VERSION}"X == X ]]; then
 fi
 
 # input: requested version, can be abbreviated ie 2.5 or 2.5.2
-# returns the fully resolved version from the known repo file (latest).
+# returns the fully resolved version from the known repo file (latest non-dev ie GA).
 function get_full_resolved_version() {
        HDP_VERSION_LOCAL=$1
        if [[ ! -z $1 ]]; then
          grep hdp repos/known_repos.txt \
+		| awk "{ if ( match( \$1, /^hdp$/) ) print \$0}" \
 		| awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
+		| awk "{ if ( match( \$6, /^dev$/) && ( \"${DEVEL}\" != \"true\" ) ) {next} else {print \$0}}" \
 		| awk "{ if ( match( \$2, /^${HDP_VERSION_LOCAL}/) ) print \$2}"  | sort -V -r | head -1
        fi
 }
