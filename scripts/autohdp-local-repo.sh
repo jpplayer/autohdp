@@ -88,7 +88,7 @@ chkconfig httpd on
 mkdir -p /var/www/html/repo
 chmod 755 /var/www/html/repo
 cd /var/www/html/repo
-reposync -r ambari
+reposync -r ambari || { echo "Error during reposync. Check yum configuration."; exit 1 }
 reposync -r hdp
 reposync -r hdp-utils
 createrepo ambari
