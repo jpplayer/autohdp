@@ -1,42 +1,8 @@
 {
     "configurations" : [
-      	{
-	"hst-server-conf" : {
-		"customer.account.name" : "Example, Inc.",
-		"customer.smartsense.id" : "A-00000000-C-00000000",
-		"customer.notification.email" : "no-reply@example.com"
-	   }
-	},
-	{
-	"activity-zeppelin-shiro" : {
-		"users.admin" : "admin"
-	   }
-	},
-	{
-	"hive-env" : {
-		"hive_txn_acid" : "on",
-		"hive_database" : "Existing MySQL Database",
-       		"hive_database_name" : "hive",
-          	"hive_database_type" : "mysql",
-         	"hive_ambari_database" : "MySQL",
-		"cost_based_optimizer" : "On"
-	}
-      },
       {
         "hive-site": {
-		"javax.jdo.option.ConnectionDriverName" : "com.mysql.jdbc.Driver",
-		"javax.jdo.option.ConnectionURL" : "jdbc:mysql://localhost/hive?createDatabaseIfNotExist=true",
-		"javax.jdo.option.ConnectionUserName" : "hive",
-		"javax.jdo.option.ConnectionPassword": "hive",
-		"hive.exec.compress.output": "true",
-		"hive.server2.enable.doAs" : "false",
-		"hive.merge.mapfiles": "true",
-		"hive.support.concurrency" : "true",
-		"hive.txn.manager" : "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager",
-		"hive.exec.dynamic.partition.mode" : "nonstrict",
-		"hive.enforce.bucketing" : "true",
-		"hive.compactor.worker.threads" : "1",
-		"hive.compactor.initiator.on" : "true"
+          "javax.jdo.option.ConnectionPassword": "hive"
         }
       },
 	{
@@ -59,44 +25,11 @@
                 "yarn.node-labels.enabled" : "true",
                 "yarn.resourcemanager.scheduler.monitor.enable" : "true"
             }
-        },
-	{
-	    "mapred-site": {
-			"mapreduce.job.reduce.slowstart.completedmaps": "0.7",
-                        "mapreduce.map.output.compress": "true",
-                        "mapreduce.output.fileoutputformat.compress": "true"
-	    }
-	},
-	{
-            "ranger-env" : {
-		"ranger_admin_password" : "admin",
-		"is_solrCloud_enabled" : "true",
-                "ranger-yarn-plugin-enabled" : "Yes",
-                "ranger-hdfs-plugin-enabled" : "Yes",
-                "ranger-hbase-plugin-enabled" : "Yes",
-                "ranger-storm-plugin-enabled" : "No",
-                "ranger-hive-plugin-enabled" : "Yes"
-             }
-	},
-	{
-	   "admin-properties" : {
-		"db_host" : "localhost"
-	   }
-	},	
-	{
-	  "kms-properties" : {
-		"KMS_MASTER_KEY_PASSWD" : "admin",
-		"DB_FLAVOR" : "MYSQL",
-		"db_host" : "localhost:3306",
-		"db_name" : "rangerkms",
-		"db_password" : "admin",
-		"db_root_password" : "admin"
-	  }
-	}
+        }
     ],
     "host_groups" : [
         {
-            "name" : "master",
+            "name" : "all",
             "components" : [
                 {
                     "name" : "SLIDER"
@@ -109,6 +42,12 @@
                 },
                 {
                     "name" : "NAMENODE"
+                },
+                {
+                    "name" : "SUPERVISOR"
+                },
+                {
+                    "name" : "STORM_UI_SERVER"
                 },
                 {
                     "name" : "HBASE_MASTER"
@@ -163,10 +102,7 @@
                 },
                 {
                     "name" : "METRICS_MONITOR"
-                },	
-        	{
-          	    "name" : "METRICS_GRAFANA"
-        	},
+                },
                 {
                     "name" : "SECONDARY_NAMENODE"
                 },
@@ -188,72 +124,24 @@
                 {
                     "name" : "MAPREDUCE2_CLIENT"
                 },
-		{
-          	    "name" : "RANGER_ADMIN"
-        	},
-		{
-          	    "name" : "RANGER_USERSYNC"
-		},
-		{
-		    "name" : "RANGER_KMS_SERVER"
-		},
-		{
-          	    "name" : "ACTIVITY_ANALYZER"
-        	},
-        	{
-          	    "name" : "HST_SERVER"
-        	},
-        	{
-          	    "name" : "HST_AGENT"
-        	},
- 		{
-          	    "name" : "ACTIVITY_EXPLORER"
-        	},
-        	{
-          	    "name" : "INFRA_SOLR_CLIENT"
-        	},
-        	{
-          	    "name" : "INFRA_SOLR"
-        	},
-		{
-          	    "name" : "KAFKA_BROKER"
-        	},
-        	{
-          	    "name" : "OOZIE_CLIENT"
-        	},
-        	{
-          	    "name" : "FALCON_CLIENT"
-        	},
-        	{
-          	    "name" : "FALCON_SERVER"
-        	},
+                {
+                    "name" : "MYSQL_SERVER"
+                },
+                {
+                    "name" : "DRPC_SERVER"
+                },
+                {
+                    "name" : "NIMBUS"
+                },
         {
-          "name" : "ATLAS_CLIENT"
+          "name" : "RANGER_ADMIN"
         },
         {
-          "name" : "ATLAS_SERVER"
-        },
-
-        {
-          "name" : "LOGSEARCH_SERVER"
+          "name" : "RANGER_USERSYNC"
         },
         {
-          "name" : "LOGSEARCH_LOGFEEDER"
-        },
-
-        {
-          "name" : "ZEPPELIN_MASTER"
-        },
-        {
-          "name" : "SPARK_CLIENT"
-        },
-        {
-          "name" : "SPARK_JOBHISTORYSERVER"
-        },
-        {
-          "name" : "OOZIE_SERVER"
+          "name" : "RANGER_KMS_SERVER"
         }
-
             ],
             "cardinality" : "1"
         }

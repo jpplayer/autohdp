@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ -z $5 ]]; then
-  echo "Usage: $0 <blueprint_base_name> <cluster_name> <realm> <kdc> <hdp_version_short> <ambari_version_short>"  
+  echo "Usage: $0 <blueprint_base_name> <cluster_name> <realm> <kdc> <hdp_version_short> <ambari_version_short> <trust_realm_opt> <trust_kdc_opt>"  
   exit -1
 fi
 
@@ -11,6 +11,8 @@ REALM=$3
 KDC=$4
 HDP_VERSION_SHORT=$5
 AMBARI_VERSION_SHORT=$6
+TRUST_REALM=$7
+TRUST_KDC=$8
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -19,7 +21,9 @@ python "$DIR/autohdp-generate-blueprints.py" \
   "$DIR/../tmp/${BLUEPRINT_BASE}-${CLUSTER_NAME}.blueprint" \
   "$REALM" \
   "$KDC" \
-  "$HDP_VERSION_SHORT"
+  "$HDP_VERSION_SHORT" \
+  "$TRUST_REALM" \
+  "$TRUST_KDC"
 
 # Don't override custom values. Available after Ambari 2.4.
 if [[ "$AMBARI_VERSION_SHORT" == "2.2" ]]; then
