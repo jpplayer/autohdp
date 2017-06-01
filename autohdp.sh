@@ -16,7 +16,8 @@ LOCALREPO="true"
 
 function usage(){
   echo "Automates HDP installation on a single node. GA version is selected unless -d is specified."
-  echo "Usage: $ME hdp_version
+  echo "Usage: $ME <options> hdp_version
+Options *must* be placed before hdp_version or else be ignored.
 Options:
 	hdp_version		Version of HDP you want to install, see repos/known_versions.txt. Can be shortened eg '2.5'.
 	-a ambari_repo		URL to Ambari repository. Can be placed in AMBARIREPO variable.
@@ -32,7 +33,8 @@ Example:
 }
 
 DEVEL="false"
-while getopts ":a:b:n:hsd" opt; do
+while getopts "a:b:n:hsd" opt; do
+ echo "processing $opt"
 	case $opt in
 		a  ) AMBARIREPO=${OPTARG};;
 		b  ) HDPREPO=${OPTARG};;
@@ -72,7 +74,7 @@ fi
 function get_full_resolved_version() {
        HDP_VERSION_LOCAL=$1
        if [[ ! -z $1 ]]; then
-         grep hdp repos/known_repos.txt \
+         cat repos/known_repos.txt \
 		| awk "{ if ( match( \$1, /^hdp$/) ) print \$0}" \
 		| awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
 		| awk "{ if ( match( \$6, /^dev$/) && ( \"${DEVEL}\" != \"true\" ) ) {next} else {print \$0}}" \
