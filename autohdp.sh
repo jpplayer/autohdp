@@ -11,6 +11,8 @@ KNOWN_REPOS=repos/known_repos.txt
 ENV_VARIABLES=tmp/variables.sh
 PW_LDAP=admin
 LOCALREPO="true"
+KDC_PRINC=admin/admin
+KDC_PASS=admin
 
 . scripts/functions.sh
 
@@ -22,8 +24,10 @@ Options:
 	-a ambari_repo		URL to Ambari repository. Can be placed in AMBARIREPO variable.
 	-b hdp_repo		URL to HDP repository. Can be placed in HDPREPO variable.
 	-n cluster_name		Name of the cluster. Can be placed in CLUSTERNAME variable.
-	-t trust_realm		Optional trust realm
-	-k trust_kdc		Optional trust kdc
+	-r kdc_realm		Optional external realm (disables ldap and kdc creation)
+	-k kdc_host		Optional external kdc
+	-u kdc_princ		Optional external principal
+	-p kdc_pass		Optional external principal password
 	-s			Skip local repo creation. 
 	-d			Use development release.
 	-h			displays help
@@ -34,17 +38,18 @@ Example:
 }
 
 DEVEL="false"
-TRUST_REALM=""
 if [[ ! $1 =~ ^\-.* ]]; then HDP_VERSION="$1"; shift 1; fi
-while getopts "a:b:n:t:k:hsd" opt; do
+while getopts "a:b:n:t:k:u:p:hsd" opt; do
 	case $opt in
 		a  ) AMBARIREPO=${OPTARG};;
 		b  ) HDPREPO=${OPTARG};;
 		n  ) CLUSTERNAME=${OPTARG};;
 		s  ) LOCALREPO="false";;
 		d  ) DEVEL="true";;
-		t  ) TRUST_REALM=${OPTARG};;
-		k  ) TRUST_KDC=${OPTARG};;
+		r  ) KDC_REALM=${OPTARG};;
+		k  ) KDC_HOST=${OPTARG};;
+		u  ) KDC_PRINC=${OPTARG};;
+		p  ) KDC_PASS=${OPTARG};;
 		h  ) usage; exit 0;;
 		\? ) echo "Invalid option: -$OPTARG" >&2; usage; exit 1;;
 		:  ) echo "Option -$OPTARG requires an argument." >&2; usage; exit 1;;
@@ -156,26 +161,34 @@ FQDN=$(hostname -f)  || (echo "Error: this host is not configured with an fqdn" 
 rm -f /etc/yum.repos.d/ambari* /etc/yum.repos.d/hdp* /etc/yum.repos.d/HDP*
 
 # Kerberos
-REALM="${CLUSTERNAME^^}"
-KDC="$FQDN"
+KDC_CREATE="true"
+if [[ "$KDC_REALM" != XX ]]; then
+  KDC_CREATE="false"
+else
+  KDC_REALM="${CLUSTERNAME^^}"
+  KDC_HOST="$FQDN"
+fi
+# TODO: rename to KDC_REALM and KDC_HOST only
+REALM=$KDC_REALM
+HOST=$KDC_HOST
 
 # Prepare blueprints
-scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$REALM" "$KDC" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$TRUST_REALM" "$TRUST_KDC"
+scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$KDC_REALM" "$KDC_HOST" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$KDC_PRINC" "$KDC_PASS"
 
 # Show values to user and prompt to continue
 echo "FQDN=$FQDN"
 echo "AMBARIREPO=$AMBARIREPO"
 echo "HDPREPO=$HDPREPO"
 echo "CLUSTERNAME=$CLUSTERNAME"
+echo "CREATE LOCAL KDC=$KDC_CREATE"
 echo "REALM=$REALM"
+echo "KDC=$KDC"
+echo "KDC PRINC=$KDC_PRINC"
+echo "KDC PASS=$KDC_PASS"
 echo "CREATE LOCAL REPOSITORY=$LOCALREPO"
 echo "OS VERSION=$OS_VERSION"
 echo "AMBARI VERSION=$AMBARI_VERSION_FULL"
 echo "HDP VERSION SHORT=$HDP_VERSION_SHORT"
-if [[ "$TRUST_REALM"XX != XX ]]; then
-  echo "TRUST REALM=$TRUST_REALM"
-  echo "TRUST KDC=$TRUST_KDC"
-fi
 # Check the URLs
 curl --output /dev/null --silent --head --fail "$AMBARIREPO" || (echo "WARN: issue loading url $AMBARIREPO")
 curl --output /dev/null --silent --head --fail "$HDPREPO" || (echo "WARN: issue loading url $HDPREPO.")
@@ -189,6 +202,7 @@ yum -y install jq pdsh yum-utils wget httpd createrepo expect
 service iptables stop
 setenforce 0
 
+if [[ $KDC_CREATE == "true" ]]; then
 # Install Kerberos. This is a good test that the system is working.
 echo "AUTOHDP: Setting up Kerberos."
 scripts/autohdp-kerberos.sh "$REALM" "$KDC" 
@@ -199,6 +213,7 @@ echo "AUTOHDP: OpenLDAP installation complete."
 # Bind the node to LDAP and KDC for SSH and identity management
 echo "AUTOHDP: Joining node to LDAP and KDC domain"
 scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
+fi
 
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
@@ -228,8 +243,10 @@ AMBARI_SERVER="$FQDN"
 # Persist all variables
 mkdir -p tmp
 cat > "${ENV_VARIABLES}" << EOF
-export REALM=${REALM}
-export KDC=${KDC}
+export KDC_REALM=${KDC_REALM}
+export KDC_HOST=${KDC_HOST}
+export KDC_PRINC=${KDC_PRINC}
+export KDC_PASS=${KDC_PASS}
 export PW_LDAP=${PW_LDAP}
 export CLUSTERNAME=${CLUSTERNAME}
 export REPO_SERVER=${REPO_SERVER}
@@ -240,8 +257,6 @@ export HDP_VERSION_FULL=${HDP_VERSION_FULL}
 export AMBARIREPO=${AMBARIREPO}
 export HDPREPO=${HDPREPO}
 export OS_VERSION=${OS_VERSION}
-export TRUST_REALM=$TRUST_REALM
-export TRUST_KDC=$TRUST_KDC
 EOF
 
 # If this fails, we are using a public repo with LOCALREPO=false, and ambari will download the necessary files later.
@@ -269,6 +284,7 @@ send "y\r"
 EOF
 fi
 
+if [[ $KDC_CREATE == "true" ]]; then
 # Configure LDAP for Ambari. This adds the configuration to /etc/ambari-server/conf/ambari.properties
 ambari-server setup-ldap \
 --ldap-url=$FQDN:389 \
@@ -293,6 +309,7 @@ cat > /etc/cron.hourly/ambari-sync-ldap << EOF
 curl -u 'admin:admin' -H 'X-Requested-By: ambari' -X POST -d '[{"Event": {"specs": [{"principal_type": "users", "sync_type": "all"}, {"principal_type": "groups", "sync_type": "all"}]}}]' http://$FQDN:8080/api/v1/ldap_sync_events
 EOF
 chmod 750 /etc/cron.hourly/ambari-sync-ldap
+fi
 
 # Daily backups of ambari database
 echo '

@@ -42,12 +42,9 @@ fi
 
 echo "Creating a local repository"
 
-# Exit early if a local repo already exists
+# Skip repo creation if a local repo already exists
 # TODO: be more thorough in checking
-if [[ -f /var/www/html/repo/ambari/ambari.repo ]]; then
-	echo "Local repo already exists: /var/www/html/repo/ambari/ambari.repo is present. Skipping."
-	exit 0
-fi
+if [[ ! -f /var/www/html/repo/ambari/ambari.repo ]]; then
 
 function checkTools() {
 	local missing=""
@@ -106,6 +103,8 @@ if [[ ! -f /var/www/html/resources/jce_policy-8.zip ]]; then
   wget http://public-repo-1.hortonworks.com/ARTIFACTS/jce_policy-8.zip -O /var/www/html/resources/jce_policy-8.zip
 fi
 
+# End Skip
+fi
 
 # Replace ambari.repo
 cat > /etc/yum.repos.d/ambari.repo << EOF

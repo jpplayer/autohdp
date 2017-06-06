@@ -11,8 +11,8 @@ REALM=$3
 KDC=$4
 HDP_VERSION_SHORT=$5
 AMBARI_VERSION_SHORT=$6
-TRUST_REALM=$7
-TRUST_KDC=$8
+KDC_PRINC=$7
+KDC_PASS=$8
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -22,8 +22,8 @@ python "$DIR/autohdp-generate-blueprints.py" \
   "$REALM" \
   "$KDC" \
   "$HDP_VERSION_SHORT" \
-  "$TRUST_REALM" \
-  "$TRUST_KDC"
+  "$KDC_PRINC" \
+  "$KDC_PASS"
 
 # Don't override custom values. Available after Ambari 2.4.
 if [[ "$AMBARI_VERSION_SHORT" == "2.2" ]]; then
