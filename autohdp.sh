@@ -39,7 +39,7 @@ Example:
 
 DEVEL="false"
 if [[ ! $1 =~ ^\-.* ]]; then HDP_VERSION="$1"; shift 1; fi
-while getopts "a:b:n:t:k:u:p:hsd" opt; do
+while getopts "a:b:n:r:k:u:p:hsd" opt; do
 	case $opt in
 		a  ) AMBARIREPO=${OPTARG};;
 		b  ) HDPREPO=${OPTARG};;
@@ -168,9 +168,6 @@ else
   KDC_REALM="${CLUSTERNAME^^}"
   KDC_HOST="$FQDN"
 fi
-# TODO: rename to KDC_REALM and KDC_HOST only
-REALM=$KDC_REALM
-HOST=$KDC_HOST
 
 # Prepare blueprints
 scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$KDC_REALM" "$KDC_HOST" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$KDC_PRINC" "$KDC_PASS"
@@ -181,8 +178,8 @@ echo "AMBARIREPO=$AMBARIREPO"
 echo "HDPREPO=$HDPREPO"
 echo "CLUSTERNAME=$CLUSTERNAME"
 echo "CREATE LOCAL KDC=$KDC_CREATE"
-echo "REALM=$REALM"
-echo "KDC=$KDC"
+echo "REALM=$KDC_REALM"
+echo "KDC=$KDC_HOST"
 echo "KDC PRINC=$KDC_PRINC"
 echo "KDC PASS=$KDC_PASS"
 echo "CREATE LOCAL REPOSITORY=$LOCALREPO"
@@ -205,14 +202,14 @@ setenforce 0
 if [[ $KDC_CREATE == "true" ]]; then
 # Install Kerberos. This is a good test that the system is working.
 echo "AUTOHDP: Setting up Kerberos."
-scripts/autohdp-kerberos.sh "$REALM" "$KDC" 
+scripts/autohdp-kerberos.sh "$KDC_REALM" "$KDC_HOST" 
 echo "AUTODHP: Kerberos installation complete."
 echo "AUTOHDP: Setting up OpenLDAP."
-scripts/autohdp-openldap.sh "$REALM" "$KDC"
+scripts/autohdp-openldap.sh "$KDC_REALM" "$KDC_HOST"
 echo "AUTOHDP: OpenLDAP installation complete."
 # Bind the node to LDAP and KDC for SSH and identity management
 echo "AUTOHDP: Joining node to LDAP and KDC domain"
-scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
+scripts/utils/join-node-ldap-kdc.sh "$KDC_REALM" "$KDC_HOST"
 fi
 
 if [[ "$LOCALREPO" == "true" ]]; then 
