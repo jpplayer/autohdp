@@ -21,9 +21,7 @@ python "$DIR/autohdp-generate-blueprints.py" \
   "$DIR/../tmp/${BLUEPRINT_BASE}-${CLUSTER_NAME}.blueprint" \
   "$REALM" \
   "$KDC" \
-  "$HDP_VERSION_SHORT" \
-  "$KDC_PRINC" \
-  "$KDC_PASS"
+  "$HDP_VERSION_SHORT" 
 
 # Don't override custom values. Available after Ambari 2.4.
 if [[ "$AMBARI_VERSION_SHORT" == "2.2" ]]; then
