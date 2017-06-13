@@ -160,6 +160,7 @@ REALM="${CLUSTERNAME^^}"
 KDC="$FQDN"
 
 # Prepare blueprints
+type jq > /dev/null 2>&1 || yum -y install jq
 scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$REALM" "$KDC" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$TRUST_REALM" "$TRUST_KDC"
 
 # Show values to user and prompt to continue
@@ -188,6 +189,7 @@ yum -y install epel-release
 yum -y install jq pdsh yum-utils wget httpd createrepo expect
 service iptables stop
 setenforce 0
+
 
 # Install Kerberos. This is a good test that the system is working.
 echo "AUTOHDP: Setting up Kerberos."
