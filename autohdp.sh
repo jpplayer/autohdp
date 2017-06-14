@@ -152,9 +152,6 @@ fi
 # Check that the node has an FQDN
 FQDN=$(hostname -f)  || (echo "Error: this host is not configured with an fqdn" && exit 1)
 
-# Clean up any existing repos
-rm -f /etc/yum.repos.d/ambari* /etc/yum.repos.d/hdp* /etc/yum.repos.d/HDP*
-
 # Kerberos
 REALM="${CLUSTERNAME^^}"
 KDC="$FQDN"

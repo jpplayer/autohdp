@@ -45,7 +45,7 @@ cat > "$DIR/../tmp/${BLUEPRINT_BASE}-${CLUSTER_NAME}.hostmapping" << EOF
   "default_password":"admin",
   "host_groups":[
     {
-      "name":"master",
+      "name":"all",
       "hosts":[ { "fqdn":"`hostname -f`" } ]
     }
   ],
