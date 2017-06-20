@@ -50,6 +50,18 @@ sed -i "/local4.*/d" /etc/rsyslog.conf
 cat >> /etc/rsyslog.conf << EOF
 local4.*                        /var/log/slapd/slapd.log
 EOF
+cat >> /etc/logrotate.d/slapd << EOF
+/var/log/slapd/slapd.log {
+    missingok
+    notifempty
+    sharedscripts
+    delaycompress
+    rotate 10
+    postrotate
+        /bin/systemctl reload slapd.service > /dev/null 2>/dev/null || true
+    endscript
+}
+EOF
 service rsyslog restart
 
 # Step 3 - Create OpenLDAP admin password
