@@ -156,6 +156,8 @@ FQDN=$(hostname -f)  || (echo "Error: this host is not configured with an fqdn" 
 REALM="${CLUSTERNAME^^}"
 KDC="$FQDN"
 
+yum -y install epel-release
+
 # Prepare blueprints
 type jq > /dev/null 2>&1 || yum -y install jq
 scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$REALM" "$KDC" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$TRUST_REALM" "$TRUST_KDC"
@@ -182,7 +184,6 @@ read -n 1
 
 # Ensure all the tools we need are installed
 # WARN: Ambari Infra Solr requires lsof but does not install it as of 2.4.1.0
-yum -y install epel-release
 yum -y install jq pdsh yum-utils wget httpd createrepo expect
 service iptables stop
 setenforce 0
