@@ -22,8 +22,8 @@ Options:
 	-a ambari_repo		URL to Ambari repository. Can be placed in AMBARIREPO variable.
 	-b hdp_repo		URL to HDP repository. Can be placed in HDPREPO variable.
 	-n cluster_name		Name of the cluster. Can be placed in CLUSTERNAME variable.
-	-t trust_realm		Optional trust realm
-	-k trust_kdc		Optional trust kdc
+	-u kdc_princ		Optional principal if using external realm
+	-p kdc_pass		Optional password if using external realm
 	-s			Skip local repo creation. 
 	-d			Use development release.
 	-h			displays help
@@ -34,17 +34,18 @@ Example:
 }
 
 DEVEL="false"
-TRUST_REALM=""
+EKDC_PRINC=""
+EKDC_PASS=""
 if [[ ! $1 =~ ^\-.* ]]; then HDP_VERSION="$1"; shift 1; fi
-while getopts "a:b:n:t:k:hsd" opt; do
+while getopts "a:b:n:u:p:hsd" opt; do
 	case $opt in
 		a  ) AMBARIREPO=${OPTARG};;
 		b  ) HDPREPO=${OPTARG};;
 		n  ) CLUSTERNAME=${OPTARG};;
 		s  ) LOCALREPO="false";;
 		d  ) DEVEL="true";;
-		t  ) TRUST_REALM=${OPTARG};;
-		k  ) TRUST_KDC=${OPTARG};;
+		u  ) EKDC_PRINC=${OPTARG};;
+		p  ) EKDC_PASS=${OPTARG};;
 		h  ) usage; exit 0;;
 		\? ) echo "Invalid option: -$OPTARG" >&2; usage; exit 1;;
 		:  ) echo "Option -$OPTARG requires an argument." >&2; usage; exit 1;;
@@ -160,7 +161,7 @@ yum -y install epel-release
 
 # Prepare blueprints
 type jq > /dev/null 2>&1 || yum -y install jq
-scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$REALM" "$KDC" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$TRUST_REALM" "$TRUST_KDC"
+scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$REALM" "$KDC" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$EKDC_PRINC" "$EKDC_PASS"
 
 # Show values to user and prompt to continue
 echo "FQDN=$FQDN"
@@ -172,9 +173,9 @@ echo "CREATE LOCAL REPOSITORY=$LOCALREPO"
 echo "OS VERSION=$OS_VERSION"
 echo "AMBARI VERSION=$AMBARI_VERSION_FULL"
 echo "HDP VERSION SHORT=$HDP_VERSION_SHORT"
-if [[ "$TRUST_REALM"XX != XX ]]; then
-  echo "TRUST REALM=$TRUST_REALM"
-  echo "TRUST KDC=$TRUST_KDC"
+if [[ "$KDC_PRINC"XX != XX ]]; then
+  echo "EXTERNAL KDC PRINC=$EKDC_PRINC"
+  echo "EXTERNAL KDC PASS=$EKDC_PASS"
 fi
 # Check the URLs
 curl --output /dev/null --silent --head --fail "$AMBARIREPO" || (echo "WARN: issue loading url $AMBARIREPO")
@@ -240,8 +241,8 @@ export HDP_VERSION_FULL=${HDP_VERSION_FULL}
 export AMBARIREPO=${AMBARIREPO}
 export HDPREPO=${HDPREPO}
 export OS_VERSION=${OS_VERSION}
-export TRUST_REALM=$TRUST_REALM
-export TRUST_KDC=$TRUST_KDC
+export EKDC_PRINC=$EKDC_PRINC
+export EKDC_PASS=$EKDC_PASS
 EOF
 
 # If this fails, we are using a public repo with LOCALREPO=false, and ambari will download the necessary files later.

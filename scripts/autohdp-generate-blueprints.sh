@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ -z $5 ]]; then
-  echo "Usage: $0 <blueprint_base_name> <cluster_name> <realm> <kdc> <hdp_version_short> <ambari_version_short>"  
+  echo "Usage: $0 <blueprint_base_name> <cluster_name> <realm> <kdc> <hdp_version_short> <ambari_version_short> <kdc_princ_opt> <kdc_pass_opt>"  
   exit -1
 fi
 
@@ -11,6 +11,8 @@ REALM=$3
 KDC=$4
 HDP_VERSION_SHORT=$5
 AMBARI_VERSION_SHORT=$6
+KDC_PRINC=${7:-admin/admin}
+KDC_PASS=${8:-admin}
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -52,8 +54,8 @@ cat > "$DIR/../tmp/${BLUEPRINT_BASE}-${CLUSTER_NAME}.hostmapping" << EOF
   "credentials" : [
      {
        "alias" : "kdc.admin.credential",
-       "principal" : "admin/admin",
-       "key" : "admin",
+       "principal" : "${KDC_PRINC}",
+       "key" : "${KDC_PASS}",
        "type" : "TEMPORARY"
      }
     ],
