@@ -5,6 +5,8 @@
 			"hadoop_heapsize" : "256",
 			"dtnode_heapsize" : "256m",
 			"namenode_heapsize" : "256m",
+			"namenode_opt_newsize" : "64m",
+			"namenode_opt_maxnewsize" : "64m",
 			"nfsgateway_heapsize" : "256"
 		},
 		"yarn-env" : {
