@@ -128,7 +128,7 @@ name=hdp-utils
 gpgcheck=0
 baseurl=http://${REPO_SERVER}/repo/hdp-utils
 EOF
-cp /etc/yum.repos.d/hdp.repo /var/www/html/repo/hdp.repo
+cp /etc/yum.repos.d/hdp.repo /var/www/html/repo/hdp/hdp.repo
 
 
 #echo "Use the following URLs for the HDP and HDP-UTILS repositories:"

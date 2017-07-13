@@ -11,6 +11,8 @@ KNOWN_REPOS=repos/known_repos.txt
 ENV_VARIABLES=tmp/variables.sh
 PW_LDAP=admin
 LOCALREPO="true"
+DEVEL="false"
+KDC_EXTERNAL="false"
 
 . scripts/functions.sh
 
@@ -36,8 +38,6 @@ Example:
 "
 }
 
-DEVEL="false"
-KDC_EXTERNAL="false"
 if [[ ! $1 =~ ^\-.* ]]; then HDP_VERSION="$1"; shift 1; fi
 while getopts "a:b:n:r:k:u:p:esdh" opt; do
 	case $opt in
@@ -216,7 +216,7 @@ if [[ "$LOCALREPO" == "true" ]]; then
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
 # Also creates a local repo for misc files like BerkeleyDB jar for Falcon.
  scripts/autohdp-local-repo.sh -a "$AMBARIREPO" -b "$HDPREPO" || exit $?
- # Now fill out variables
+# Update the variables to point locally
  REPO_SERVER="$FQDN"
  AMBARIREPO="http://${REPO_SERVER}/repo/ambari/ambari.repo"
  HDPREPO="http://${REPO_SERVER}/repo/hdp.repo" 
@@ -253,8 +253,8 @@ export HDP_VERSION_FULL=${HDP_VERSION_FULL}
 export AMBARIREPO=${AMBARIREPO}
 export HDPREPO=${HDPREPO}
 export OS_VERSION=${OS_VERSION}
-export KDC_PRINC=$EKDC_PRINC
-export KDC_PASS=$EKDC_PASS
+export KDC_PRINC=$KDC_PRINC
+export KDC_PASS=$KDC_PASS
 EOF
 
 # If this fails, we are using a public repo with LOCALREPO=false, and ambari will download the necessary files later.
