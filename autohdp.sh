@@ -260,6 +260,7 @@ export KDC_PASS=$KDC_PASS
 EOF
 
 # If this fails, we are using a public repo with LOCALREPO=false, and ambari will download the necessary files later.
+# wget will not redownload if file already exists
 mkdir -p /var/lib/ambari-server/resources
 wget -nc http://${REPO_SERVER}/resources/jdk-8u60-linux-x64.tar.gz -O /var/lib/ambari-server/resources/jdk-8u60-linux-x64.tar.gz
 wget -nc http://${REPO_SERVER}/resources/jce_policy-8.zip -O /var/lib/ambari-server/resources/jce_policy-8.zip

@@ -132,16 +132,7 @@
                 },
                 {
                     "name" : "NIMBUS"
-                },
-        {
-          "name" : "RANGER_ADMIN"
-        },
-        {
-          "name" : "RANGER_USERSYNC"
-        },
-        {
-          "name" : "RANGER_KMS_SERVER"
-        }
+                }
             ],
             "cardinality" : "1"
         }
