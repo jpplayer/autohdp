@@ -5,18 +5,14 @@
 
 REALM=$1
 KDC=$2
+CLIENT_ONLY=${3:-false}
 
 PW_MASTER=admin
 PW_ADMIN=admin
 
 if [[ "$REALM"X == X || "$KDC"X == X ]]; then
-  echo "Usage: $0 <kerberos_realm> <kdc_fqdn>"
+  echo "Usage: $0 <kerberos_realm> <kdc_fqdn> <client_only_opt>"
   exit 1
-fi
-
-if [[ -f /var/run/krb5kdc.pid ]]; then
-	echo "A KDC already appears to be running. Aborting."
-	exit 1
 fi
 
 if [[ ! "${KDC}" =~ "." ]]; then
@@ -24,26 +20,10 @@ if [[ ! "${KDC}" =~ "." ]]; then
 	exit 1
 fi
 
-yum -y install krb5-server krb5-workstation rng-tools
-
-cat > /var/kerberos/krb5kdc/kadm5.acl << EOF
-*/admin@${REALM}	*
-EOF
-
-cat > /var/kerberos/krb5kdc/kdc.conf << EOF
-[kdcdefaults]
- kdc_ports = 88
- kdc_tcp_ports = 88
-
-[realms]
- ${REALM} = {
-  #master_key_type = aes256-cts
-  acl_file = /var/kerberos/krb5kdc/kadm5.acl
-  dict_file = /usr/share/dict/words
-  admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
-  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
- }
-EOF
+if [[ -f /var/run/krb5kdc.pid ]]; then
+	echo "A KDC already appears to be running. Aborting."
+	exit 1
+fi
 
 cat > /etc/krb5.conf << EOF
 [libdefaults]
@@ -72,6 +52,36 @@ cat > /etc/krb5.conf << EOF
   ${KDC} = ${REALM}
 
 EOF
+
+# Install client tools and exit if in client mode
+if [[ "$CLIENT_ONLY" == "true" ]]; then
+ 	yum -y install krb5-workstation
+	# That's it, we can return.
+	exit 0
+fi
+
+# Server only
+yum -y install krb5-server krb5-workstation rng-tools
+
+cat > /var/kerberos/krb5kdc/kadm5.acl << EOF
+*/admin@${REALM}	*
+EOF
+
+cat > /var/kerberos/krb5kdc/kdc.conf << EOF
+[kdcdefaults]
+ kdc_ports = 88
+ kdc_tcp_ports = 88
+
+[realms]
+ ${REALM} = {
+  #master_key_type = aes256-cts
+  acl_file = /var/kerberos/krb5kdc/kadm5.acl
+  dict_file = /usr/share/dict/words
+  admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+ }
+EOF
+
 
 # Increase entropy
 if false; then

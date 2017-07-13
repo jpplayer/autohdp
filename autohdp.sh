@@ -200,10 +200,12 @@ setenforce 0
 
 
 # Install Kerberos if not external. This is a good test that the system is working.
-if [[ "$KDC_EXTERNAL" == "false" ]]; then
 echo "AUTOHDP: Setting up Kerberos."
-scripts/autohdp-kerberos.sh "$REALM" "$KDC" 
+scripts/autohdp-kerberos.sh "$REALM" "$KDC" "$KDC_EXTERNAL"
 echo "AUTODHP: Kerberos installation complete."
+
+# Only install LDAP if we are using a local KDC
+if [[ "$KDC_EXTERNAL" == "false" ]]; then
 echo "AUTOHDP: Setting up OpenLDAP."
 scripts/autohdp-openldap.sh "$REALM" "$KDC"
 echo "AUTOHDP: OpenLDAP installation complete."
