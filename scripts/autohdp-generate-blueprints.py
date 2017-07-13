@@ -11,9 +11,11 @@ blueprint_target = sys.argv[2]
 realm = sys.argv[3]
 kdc = sys.argv[4]
 version_short = sys.argv[5]
-if len(sys.argv) >= 7:
-	trust_realm = sys.argv[6]
-	trust_kdc = sys.argv[7]
+
+
+#if len(sys.argv) >= 7:
+#	trust_realm = sys.argv[6]
+#	trust_kdc = sys.argv[7]
 
 jsonFile = open( blueprint_source, "r")
 b = json.load( jsonFile )
@@ -53,8 +55,8 @@ b["configurations"].append ( snip )
 b["Blueprints"]["security"] = { "type" :"KERBEROS" }
 
 snip = json.loads( krb_snip_conf )
-domain = kdc [ kdc.index(".") : ]
-snip["krb5-conf"]["properties"]["domains"] = "*" + domain + " = " + realm 
+#domain = kdc [ kdc.index(".") : ]
+#snip["krb5-conf"]["properties"]["domains"] = "*" + domain + " = " + realm 
 
 if trust_realm:
 	b["Blueprints"]["security"]["properties"] = { "additional_realms" : trust_realm }
