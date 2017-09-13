@@ -221,7 +221,7 @@ if [[ "$LOCALREPO" == "true" ]]; then
 # Update the variables to point locally
  REPO_SERVER="$FQDN"
  AMBARIREPO="http://${REPO_SERVER}/repo/ambari/ambari.repo"
- HDPREPO="http://${REPO_SERVER}/repo/hdp.repo" 
+ HDPREPO="http://${REPO_SERVER}/repo/hdp/hdp.repo" 
 else
  REPO_SERVER=$( python -c "from urlparse import urlparse
 url = urlparse('$HDPREPO')
