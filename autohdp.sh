@@ -240,6 +240,7 @@ scripts/autohdp-ambari-repos.sh "$HDPREPO"
 AMBARI_SERVER="$FQDN"
 
 # Persist all variables
+# Note that in the case of a local repo, the URLS are now updated.
 mkdir -p tmp
 cat > "${ENV_VARIABLES}" << EOF
 export KDC_EXTERNAL=${KDC_EXTERNAL}
