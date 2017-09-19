@@ -9,8 +9,9 @@ trust_kdc = None
 blueprint_source = sys.argv[1]
 blueprint_target = sys.argv[2]
 version_short = sys.argv[3]
-realm = sys.argv[4]
-kdc = sys.argv[5]
+security_type = sys.argv[4]
+realm = sys.argv[5]
+kdc = sys.argv[6]
 
 #if len(sys.argv) >= 7:
 #	trust_realm = sys.argv[6]
@@ -51,7 +52,7 @@ snip["kerberos-env"]["properties"]["admin_server_host"] = kdc
 snip["kerberos-env"]["properties"]["kdc_hosts"] = kdc
 b["configurations"].append ( snip )
 
-if realm:
+if security_type == "NONE":
 	b["Blueprints"]["security"] = { "type" :"KERBEROS" }
 
 

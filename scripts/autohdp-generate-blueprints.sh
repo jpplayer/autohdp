@@ -14,8 +14,7 @@ if [[ -z $1 ]]; then
   exit -1
 fi
 
-KDC_PRINC=admin/admin
-KDC_PASS=admin
+SECURITY="true"
 
 while getopts "a:n:r:k:u:p:v:zh" opt; do
         case $opt in
@@ -38,14 +37,15 @@ done
 shift $((OPTIND-1))
 if [[ "$1"XX != XX ]]; then BLUEPRINT_BASE="$1"; fi
 
+KDC_PRINC=${KDC_PRINC:-admin/admin}
+KDC_PASS=${KDC_PASS:-admin}
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # If security is disabled, reset Kerberos info
 SECURITY_TYPE="KERBEROS"
 if [[ $SECURITY == "false" ]]; then
-KDC_REALM=
-KDC_HOST=
-SECURITY_TYPE="SIMPLE"
+SECURITY_TYPE="NONE"
 fi
 
 mkdir -p "$DIR/../tmp"
@@ -53,6 +53,7 @@ python "$DIR/autohdp-generate-blueprints.py" \
   "$DIR/../blueprints/${BLUEPRINT_BASE}.blueprint" \
   "$DIR/../tmp/${BLUEPRINT_BASE}-${CLUSTER_NAME}.blueprint" \
   "$HDP_VERSION_SHORT" \
+  "$SECURITY_TYPE" \
   "$KDC_REALM" \
   "$KDC_HOST" 
  
