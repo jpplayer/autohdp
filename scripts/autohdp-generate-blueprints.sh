@@ -1,29 +1,61 @@
 #!/bin/bash
 
-if [[ -z $5 ]]; then
-  echo "Usage: $0 <blueprint_base_name> <cluster_name> <realm> <kdc> <hdp_version_short> <ambari_version_short> <kdc_princ_opt> <kdc_pass_opt>"  
+if [[ -z $1 ]]; then
+  echo "Usage: $0 <options> blueprint_base_name"
+  echo "Options:
+ -n cluster_name
+ -r realm
+ -k kdc
+ -v hdp_version_short
+ -a ambari_version_short
+ -u kdc_princ
+ -p kdc_pass_opt
+ -z disable security"  
   exit -1
 fi
 
-BLUEPRINT_BASE=$1
-CLUSTER_NAME=$2
-REALM=$3
-KDC=$4
-HDP_VERSION_SHORT=$5
-AMBARI_VERSION_SHORT=$6
-KDC_PRINC=${7:-admin/admin}
-KDC_PASS=${8:-admin}
+KDC_PRINC=admin/admin
+KDC_PASS=admin
+
+while getopts "a:n:r:k:u:p:v:zh" opt; do
+        case $opt in
+                a  ) AMBARI_VERSION_SHORT=${OPTARG};;
+                v  ) HDP_VERSION_SHORT=${OPTARG};;
+                n  ) CLUSTER_NAME=${OPTARG};;
+                e  ) KDC_EXTERNAL="true";;
+                r  ) KDC_REALM=${OPTARG};;
+                k  ) KDC_HOST=${OPTARG};;
+                u  ) KDC_PRINC=${OPTARG};;
+                p  ) KDC_PASS=${OPTARG};; 
+                z  ) SECURITY="false";;
+                h  ) usage; exit 0;;
+                \? ) echo "Invalid option: -$OPTARG" >&2; usage; exit 1;;
+                :  ) echo "Option -$OPTARG requires an argument." >&2; usage; exit 1;;
+                *  ) echo "Unimplemented option: -$OPTARG" >&2; usage; exit 1;;
+        esac
+done
+
+shift $((OPTIND-1))
+if [[ "$1"XX != XX ]]; then BLUEPRINT_BASE="$1"; fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# If security is disabled, reset Kerberos info
+SECURITY_TYPE="KERBEROS"
+if [[ $SECURITY == "false" ]]; then
+KDC_REALM=
+KDC_HOST=
+SECURITY_TYPE="SIMPLE"
+fi
 
 mkdir -p "$DIR/../tmp"
 python "$DIR/autohdp-generate-blueprints.py" \
   "$DIR/../blueprints/${BLUEPRINT_BASE}.blueprint" \
   "$DIR/../tmp/${BLUEPRINT_BASE}-${CLUSTER_NAME}.blueprint" \
-  "$REALM" \
-  "$KDC" \
-  "$HDP_VERSION_SHORT" 
-
+  "$HDP_VERSION_SHORT" \
+  "$KDC_REALM" \
+  "$KDC_HOST" 
+ 
 # Don't override custom values. Available after Ambari 2.4.
 if [[ "$AMBARI_VERSION_SHORT" == "2.2" ]]; then
   STRATEGY=ONLY_STACK_DEFAULTS_APPLY
@@ -60,7 +92,7 @@ cat > "$DIR/../tmp/${BLUEPRINT_BASE}-${CLUSTER_NAME}.hostmapping" << EOF
      }
     ],
    "security" : {
-        "type" : "KERBEROS"
+        "type" : "${SECURITY_TYPE}"
    },
    "configurations": [
 	${SETTINGS}

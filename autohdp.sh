@@ -11,6 +11,7 @@ KNOWN_REPOS=repos/known_repos.txt
 ENV_VARIABLES=tmp/variables.sh
 PW_LDAP=admin
 LOCALREPO="true"
+SECURITY="true"
 DEVEL="false"
 KDC_EXTERNAL="false"
 
@@ -32,6 +33,7 @@ Options:
 	-s			Skip local repo creation. 
 	-d			Use development release.
 	-h			displays help
+	-z			Disable security
 
 Example: 
 	$ME $LATEST_HDP
@@ -39,7 +41,7 @@ Example:
 }
 
 if [[ ! $1 =~ ^\-.* ]]; then HDP_VERSION="$1"; shift 1; fi
-while getopts "a:b:n:r:k:u:p:esdh" opt; do
+while getopts "a:b:n:r:k:u:p:esdhz" opt; do
 	case $opt in
 		a  ) AMBARIREPO=${OPTARG};;
 		b  ) HDPREPO=${OPTARG};;
@@ -51,6 +53,7 @@ while getopts "a:b:n:r:k:u:p:esdh" opt; do
 		p  ) KDC_PASS=${OPTARG};;
 		s  ) LOCALREPO="false";;
 		d  ) DEVEL="true";;
+		z  ) SECURITY="false"; SECURITY_OPT="-z";;
 		h  ) usage; exit 0;;
 		\? ) echo "Invalid option: -$OPTARG" >&2; usage; exit 1;;
 		:  ) echo "Option -$OPTARG requires an argument." >&2; usage; exit 1;;
@@ -167,7 +170,7 @@ yum -y install epel-release
 
 # Prepare blueprints
 type jq > /dev/null 2>&1 || yum -y install jq
-scripts/autohdp-generate-blueprints.sh singlenode "${CLUSTERNAME}" "$REALM" "$KDC" "$HDP_VERSION_SHORT" "$AMBARI_VERSION_SHORT" "$KDC_PRINC" "$KDC_PASS"
+scripts/autohdp-generate-blueprints.sh -n "${CLUSTERNAME}" -r "$REALM" -k "$KDC" -v "$HDP_VERSION_SHORT" -a "$AMBARI_VERSION_SHORT" -u "$KDC_PRINC" -p "$KDC_PASS" ${SECURITY_OPT} singlenode
 
 # Show values to user and prompt to continue
 echo "FQDN=$FQDN"
@@ -175,6 +178,7 @@ echo "AMBARIREPO=$AMBARIREPO"
 echo "HDPREPO=$HDPREPO"
 echo "CLUSTERNAME=$CLUSTERNAME"
 echo "EXTERNAL KDC=$KDC_EXTERNAL"
+echo "SECURITY=$SECURITY"
 echo "REALM=$REALM"
 echo "KDC=$KDC"
 echo "CREATE LOCAL REPOSITORY=$LOCALREPO"
@@ -197,7 +201,6 @@ read -n 1
 yum -y install jq pdsh yum-utils wget httpd createrepo expect
 service iptables stop
 setenforce 0
-
 
 # Install Kerberos if not external. This is a good test that the system is working.
 echo "AUTOHDP: Setting up Kerberos."
@@ -243,6 +246,7 @@ AMBARI_SERVER="$FQDN"
 # Note that in the case of a local repo, the URLS are now updated.
 mkdir -p tmp
 cat > "${ENV_VARIABLES}" << EOF
+export SECURITY=$SECURITY
 export KDC_EXTERNAL=${KDC_EXTERNAL}
 export REALM=${REALM}
 export KDC=${KDC}
