@@ -29,4 +29,4 @@ ambari  2.6.1.5 centos7 http://public-repo-1.hortonworks.com/ambari/centos7/2.x/
 hdp     2.6.4.0 centos7 http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.6.4.0/hdp.repo   2.6.1.5
 
 ambari  2.7.0.0-269 centos7 http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/2.x/BUILDS/2.7.0.0-269/ambaribn.repo	dev
-hdp     3.0.0.0-1146 centos7 http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos7/3.x/BUILDS/3.0.0.0-1146/hdp.repo	2.7.0.0-269	dev
+hdp     3.0.0.0-1146 centos7 http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos7/3.x/BUILDS/3.0.0.0-1146/HDP-3.0.0.0-1146.xml	2.7.0.0-269	dev

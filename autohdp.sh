@@ -97,7 +97,7 @@ function get_full_resolved_version() {
 
 # input: full hdp version like 2.4.2.0, not abbreviated
 function get_hdp_repo(){
-	HDP_VERSION_FULL=$1
+	HDP_VERSION_FULL="$1"
 	grep hdp repos/known_repos.txt \
                 | awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
 		| awk "{ if ( match( \$2, /^${HDP_VERSION_FULL}$/) ) print \$2,\$4}"  | sort -V -r | head -1 | awk '{print $2}'
@@ -127,7 +127,8 @@ function get_ambari_repo() {
 
 # default for CLUSTERNAME
 if [[ "$CLUSTERNAME"X == X ]]; then
-	CLUSTERNAME=`hostname`
+	HN=`hostname`
+	CLUSTERNAME="${HN%%.*}"
 fi
 
 # Resolve to full and short version
