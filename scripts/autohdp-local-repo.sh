@@ -7,8 +7,9 @@ ME=${0##*/}
 
 REPO_SERVER=`hostname -f`
 
-AMBARIREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/ambari/2.4.0.0-4/centos6/ambari.repo"
-HDPREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/2.5.0.0-4/centos6/hdp.repo"
+AMBARIREPOEX="http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.6.2.2/ambari.repo"
+HDPREPOEX="http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.5.0/hdp.repo"
+HDPGPLREPOEX="http://public-repo-1.hortonworks.com/HDP-GPL/centos7/2.x/updates/2.6.5.0/hdp.gpl.repo"
 
 function usage(){
   echo "Create a local repository to serve Ambari and HDP packages."
@@ -16,18 +17,20 @@ function usage(){
 Options:
 	-a ambari_repo		URL to Ambari repository
 	-b hdp_repo		URL to HDP repository
+	-g hdp_gpl_repo		URL to HDP GPL repository
 	-h			displays help
 
 Example: 
-	$ME -a $AMBARIREPOEX -b $HDPREPOEX
+	$ME -a $AMBARIREPOEX -b $HDPREPOEX -g $HDPGPLREPOEX
 "
 }
 
 # Warning: the following won't ever execute if the script is sourced.
-while getopts ":a:b:hs" opt; do
+while getopts ":a:b:g:hs" opt; do
 	case $opt in
 		a  ) AMBARIREPO=${OPTARG};;
 		b  ) HDPREPO=${OPTARG};;
+		g  ) HDPGPLREPO=${OPTARG};;
 		h  ) usage; exit 0;;
 		\? ) echo "Invalid option: -$OPTARG" >&2; usage; exit 1;;
 		:  ) echo "Option -$OPTARG requires an argument." >&2; usage; exit 1;;
@@ -81,6 +84,10 @@ wget "$HDPREPO" -O /etc/yum.repos.d/hdp.repo
 sed -i -E 's;\[.*?HDP-[^U].*?\];[hdp];I' /etc/yum.repos.d/hdp.repo
 sed -i -E 's;\[.*?HDP-UTILS.*?\];[hdp-utils];I' /etc/yum.repos.d/hdp.repo
 
+rm -f /etc/yum.repos.d/hdp.gpl.repo
+wget "$HDPGPLREPO" -O /etc/yum.repos.d/hdp.gpl.repo
+sed -i -E 's;\[.*?HDP-GPL-[^U].*?\];[hdp-gpl];I' /etc/yum.repos.d/hdp.gpl.repo
+
 OLDPWD="$PWD"
 service iptables stop
 service httpd start
@@ -91,12 +98,15 @@ cd /var/www/html/repo
 reposync -r ambari || { echo "Error during reposync. Check yum configuration."; exit 1; }
 reposync -r hdp
 reposync -r hdp-utils
+reposync -r hdp-gpl
 createrepo ambari
 createrepo hdp
 createrepo hdp-utils
+createrepo hdp-gpl
 cd "$OLDPWD"
 
 rm -f /etc/yum.repos.d/hdp.repo
+rm -f /etc/yum.repos.d/hdp.gpl.repo
 
 mkdir -p /var/www/html/resources
 if [[ ! -f /var/www/html/resources/jdk-8u60-linux-x64.tar.gz ]]; then
@@ -131,7 +141,17 @@ EOF
 cp /etc/yum.repos.d/hdp.repo /var/www/html/repo/hdp/hdp.repo
 rm -f /etc/yum.repos.d/hdp.repo
 
+cat > /etc/yum.repos.d/hdp.gpl.repo << EOF
+[hdp-gpl]
+name=hdp-gpl
+gpgcheck=0
+baseurl=http://${REPO_SERVER}/repo/hdp-gpl
+EOF
+cp /etc/yum.repos.d/hdp.gpl.repo /var/www/html/repo/hdp-gpl/hdp.gpl.repo
+rm -f /etc/yum.repos.d/hdp.gpl.repo
+
 #echo "Use the following URLs for the HDP and HDP-UTILS repositories:"
 #echo "http://`hostname -f`/repo/ambari"
 #echo "http://`hostname -f`/repo/hdp"
+#sed -i -E 's;\[.*?HDP-UTILS.*?\];[hdp-utils];I' /etc/yum.repos.d/hdp.repo
 #echo "http://`hostname -f`/repo/hdp-utils"

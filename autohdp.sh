@@ -3,8 +3,9 @@ set +x
 
 ME=${0##*/}
 
-AMBARIREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/ambari/2.4.0.0-4/centos6/ambari.repo"
-HDPREPOEX="http://public-repo-1.hortonworks.com/HDP-LABS/Projects/Erie-Preview/2.5.0.0-4/centos6/hdp.repo"
+AMBARIREPOEX="http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.6.2.2/ambari.repo"
+HDPREPOEX="http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.5.0/hdp.repo"
+HDPGPLREPOEX="http://public-repo-1.hortonworks.com/HDP-GPL/centos7/2.x/updates/2.6.5.0/hdp.gpl.repo"
 LATEST_HDP="2.6"
 
 KNOWN_REPOS=repos/known_repos.txt
@@ -98,28 +99,48 @@ function get_full_resolved_version() {
 # input: full hdp version like 2.4.2.0, not abbreviated
 function get_hdp_repo(){
 	HDP_VERSION_FULL="$1"
-	grep hdp repos/known_repos.txt \
+	cat repos/known_repos.txt \
+		| awk "{ if ( match( \$1, /^hdp$/) ) print \$0}" \
                 | awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
 		| awk "{ if ( match( \$2, /^${HDP_VERSION_FULL}$/) ) print \$2,\$4}"  | sort -V -r | head -1 | awk '{print $2}'
 }
 
+function get_hdpgpl_repo(){
+        HDP_VERSION_FULL="$1"
+        cat repos/known_repos.txt \
+		| awk "{ if ( match( \$1, /^hdp-gpl$/) ) print \$0}" \
+                | awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
+                | awk "{ if ( match( \$2, /^${HDP_VERSION_FULL}$/) ) print \$2,\$4}"  | sort -V -r | head -1 | awk '{print $2}'
+}
+
 function get_hdp_recommended_ambari(){
 	HDP_VERSION_FULL="$1"
-	grep hdp repos/known_repos.txt \
+        cat repos/known_repos.txt \
+                | awk "{ if ( match( \$1, /^hdp$/) ) print \$0}" \
                 | awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
 		| awk "{ if ( match( \$2, /^${HDP_VERSION_FULL}$/) ) print \$2,\$5}"  | sort -V -r | head -1 | awk '{print $2}'
+}
+
+function get_hdp_recommended_utils(){
+        HDP_VERSION_FULL="$1"
+        cat repos/known_repos.txt \
+                | awk "{ if ( match( \$1, /^hdp$/) ) print \$0}" \
+                | awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
+                | awk "{ if ( match( \$2, /^${HDP_VERSION_FULL}$/) ) print \$2,\$6}"  | sort -V -r | head -1 | awk '{print $2}'
 }
 
 # input: full hdp version like 2.4.2.0, or empty.
 function get_ambari_repo() {
 	HDP_VERSION_FULL=$1
 	if [[ "${HDP_VERSION_FULL}"X == X ]]; then
-		grep ambari repos/known_repos.txt \
+		cat repos/known_repos.txt \
+                | awk "{ if ( match( \$1, /^ambari$/) ) print \$0}" \
                 | awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
 		| sort -V -r | head -1 | awk '{print $4}'
 	else
 		AMBARI_VERSION_FULL=$( get_hdp_recommended_ambari $HDP_VERSION_FULL  )
-		grep ambari repos/known_repos.txt \
+                cat repos/known_repos.txt \
+                | awk "{ if ( match( \$1, /^ambari$/) ) print \$0}" \
                 | awk "{ if ( match( \$3, /^${OS_VERSION}$/) ) print \$0}" \
 		| awk "{ if ( match( \$2, /^${AMBARI_VERSION_FULL}$/) ) print \$2,\$4}"  | sort -V -r | head -1 | awk '{print $2}'
 	fi
@@ -143,6 +164,8 @@ if [[ "$AMBARIREPO"X == X ]]; then
 	AMBARI_VERSION_FULL=$( get_hdp_recommended_ambari $HDP_VERSION_FULL  )
 fi
 
+HDP_UTILS_VERSION=$( get_hdp_recommended_utils $HDP_VERSION_FULL  )
+
 # Always use a repo manually supplied. Otherwise we get it from our known repo list.
 if [[ "$HDPREPO"X == X ]]; then
 	HDPREPO=$(get_hdp_repo $HDP_VERSION_FULL)
@@ -152,6 +175,16 @@ if [[ "$HDPREPO"X == X ]]; then
 	exit 1
 	fi
 fi
+
+if [[ "$HDPGPLREPO"X == X ]]; then
+        HDPGPLREPO=$(get_hdpgpl_repo $HDP_VERSION_FULL)
+        if [[ "$HDPGPLREPO"X == X ]]; then
+                echo "Failed to determine HDP GPL repository location. Aborting."
+                echo "Check that a repo matches the requested HDP-GPL version under repos/known_versions.txt"
+        exit 1
+        fi
+fi
+
 
 if [[ "$AMBARIREPO"X == X ]]; then
 	# obtain the recommended Ambari version for the given HDP release.
@@ -177,6 +210,7 @@ scripts/autohdp-generate-blueprints.sh -n "${CLUSTERNAME}" -r "$REALM" -k "$KDC"
 echo "FQDN=$FQDN"
 echo "AMBARIREPO=$AMBARIREPO"
 echo "HDPREPO=$HDPREPO"
+echo "HDPGPLREPO=$HDPGPLREPO"
 echo "CLUSTERNAME=$CLUSTERNAME"
 echo "EXTERNAL KDC=$KDC_EXTERNAL"
 echo "SECURITY=$SECURITY"
@@ -193,6 +227,7 @@ fi
 # Check the URLs
 curl --output /dev/null --silent --head --fail "$AMBARIREPO" || (echo "WARN: issue loading url $AMBARIREPO")
 curl --output /dev/null --silent --head --fail "$HDPREPO" || (echo "WARN: issue loading url $HDPREPO.")
+curl --output /dev/null --silent --head --fail "$HDPGPLREPO" || (echo "WARN: issue loading url $HDPGPLREPO.")
 echo "Blueprints are located under ./tmp"
 echo "Press a key to continue"
 read -n 1
@@ -221,11 +256,12 @@ fi
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
 # Also creates a local repo for misc files like BerkeleyDB jar for Falcon.
- scripts/autohdp-local-repo.sh -a "$AMBARIREPO" -b "$HDPREPO" || exit $?
+ scripts/autohdp-local-repo.sh -a "$AMBARIREPO" -b "$HDPREPO" -g "$HDPGPLREPO" || exit $?
 # Update the variables to point locally
  REPO_SERVER="$FQDN"
  AMBARIREPO="http://${REPO_SERVER}/repo/ambari/ambari.repo"
  HDPREPO="http://${REPO_SERVER}/repo/hdp/hdp.repo" 
+ HDPGPLREPO="http://${REPO_SERVER}/repo/hdp-gpl/hdp.gpl.repo"
 else
  REPO_SERVER=$( python -c "from urlparse import urlparse
 url = urlparse('$HDPREPO')
@@ -233,13 +269,8 @@ print url.netloc" )
  wget ${AMBARIREPO} -O /etc/yum.repos.d/ambari.repo
 fi
 
-# Add BDB jar for Falcon
-wget http://search.maven.org/remotecontent?filepath=com/sleepycat/je/5.0.73/je-5.0.73.jar -O /usr/share/je-5.0.73.jar
-chmod 644 /usr/share/je-5.0.73.jar
-ambari-server setup --jdbc-db=bdb --jdbc-driver=/usr/share/je-5.0.73.jar
-
 # Generate repo snippets in JSON format for Ambari
-scripts/autohdp-ambari-repos.sh "$HDPREPO"
+scripts/autohdp-ambari-repos.sh "$HDPREPO" "$HDPGPLREPO"
 
 AMBARI_SERVER="$FQDN"
 
@@ -260,6 +291,7 @@ export HDP_VERSION_SHORT=${HDP_VERSION_SHORT}
 export HDP_VERSION_FULL=${HDP_VERSION_FULL}
 export AMBARIREPO=${AMBARIREPO}
 export HDPREPO=${HDPREPO}
+export HDPGPLREPO=${HDPGPLREPO}
 export OS_VERSION=${OS_VERSION}
 export KDC_PRINC=$KDC_PRINC
 export KDC_PASS=$KDC_PASS
@@ -268,7 +300,7 @@ EOF
 # If this fails, we are using a public repo with LOCALREPO=false, and ambari will download the necessary files later.
 # wget will not redownload if file already exists
 mkdir -p /var/lib/ambari-server/resources
-wget -nc http://${REPO_SERVER}/resources/jdk-8u60-linux-x64.tar.gz -O /var/lib/ambari-server/resources/jdk-8u60-linux-x64.tar.gz
+wget -nc http://${REPO_SERVER}/resources/jdk-8u122-linux-x64.tar.gz -O /var/lib/ambari-server/resources/jdk-8u122-linux-x64.tar.gz
 wget -nc http://${REPO_SERVER}/resources/jce_policy-8.zip -O /var/lib/ambari-server/resources/jce_policy-8.zip
 
 # Install Ambari
@@ -290,6 +322,11 @@ expect "(y):"
 send "y\r"
 EOF
 fi
+
+# Add BDB jar for Falcon
+wget http://search.maven.org/remotecontent?filepath=com/sleepycat/je/5.0.73/je-5.0.73.jar -O /usr/share/je-5.0.73.jar
+chmod 644 /usr/share/je-5.0.73.jar
+ambari-server setup --jdbc-db=bdb --jdbc-driver=/usr/share/je-5.0.73.jar
 
 # Configure LDAP for Ambari (internal KDC only). This adds the configuration to /etc/ambari-server/conf/ambari.properties
 if [[ "$KDC_EXTERNAL" == "false" ]]; then
@@ -353,7 +390,7 @@ done
 
 # TODO: make util version dynamic not static
 # Install cluster
-scripts/autohdp-install-cluster.sh singlenode "${CLUSTERNAME}" "$HDP_VERSION_SHORT" "1.1.0.21"
+scripts/autohdp-install-cluster.sh singlenode "${CLUSTERNAME}" "$HDP_VERSION_SHORT" "$HDP_UTILS_VERSION"
 
 echo ""
 echo -e "Ambari is reachable at \033[1mhttp://${AMBARI_SERVER}:8080\033[0m (admin/admin)"
