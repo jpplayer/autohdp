@@ -1,0 +1,133 @@
+{
+    "configurations" : [
+      {
+        "hive-site": {
+          "javax.jdo.option.ConnectionPassword": "hive"
+        }
+      },
+	{
+	    "core-site": {
+		"hadoop.http.authentication.cookie.persistent" : "true"
+	    }
+	},
+	{
+	    "hdfs-site": {
+		"dfs.namenode.safemode.extension" : "1000"
+	     }
+	},
+        {
+            "hbase-env": {
+                "phoenix_sql_enabled" : "true"
+            }
+        },
+        {
+            "yarn-site": {
+                "yarn.node-labels.enabled" : "true",
+                "yarn.resourcemanager.scheduler.monitor.enable" : "true"
+            }
+        }
+    ],
+    "host_groups" : [
+        {
+            "name" : "all",
+            "components" : [
+                {
+                    "name" : "PIG"
+                },
+                {
+                    "name" : "HISTORYSERVER"
+                },
+                {
+                    "name" : "NAMENODE"
+                },
+                {
+                    "name" : "SUPERVISOR"
+                },
+                {
+                    "name" : "STORM_UI_SERVER"
+                },
+                {
+                    "name" : "HBASE_MASTER"
+                },
+                {
+                    "name" : "HBASE_REGIONSERVER"
+                },
+                {
+                    "name" : "PHOENIX_QUERY_SERVER"
+                },
+                {
+                    "name" : "HBASE_CLIENT"
+                },
+                {
+                    "name" : "AMBARI_SERVER"
+                },
+                {
+                    "name" : "APP_TIMELINE_SERVER"
+                },
+                {
+                    "name" : "TIMELINE_READER"
+                },
+                {
+                    "name" : "HDFS_CLIENT"
+                },
+                {
+                    "name" : "HIVE_CLIENT"
+                },
+                {
+                    "name" : "NODEMANAGER"
+                },
+                {
+                    "name" : "DATANODE"
+                },
+                {
+                    "name" : "RESOURCEMANAGER"
+                },
+                {
+                    "name" : "ZOOKEEPER_SERVER"
+                },
+                {
+                    "name" : "ZOOKEEPER_CLIENT"
+                },
+                {
+                    "name" : "HIVE_SERVER"
+                },
+                {
+                    "name" : "METRICS_COLLECTOR"
+                },
+                {
+                    "name" : "METRICS_MONITOR"
+                },
+                {
+                    "name" : "SECONDARY_NAMENODE"
+                },
+                {
+                    "name" : "TEZ_CLIENT"
+                },
+                {
+                    "name" : "HIVE_METASTORE"
+                },
+                {
+                    "name" : "YARN_CLIENT"
+                },
+                {
+                    "name" : "MAPREDUCE2_CLIENT"
+                },
+                {
+                    "name" : "DRPC_SERVER"
+                },
+                {
+                    "name" : "NIMBUS"
+                },
+		{
+                    "name" : "MYSQL_SERVER"
+                }
+            ],
+            "cardinality" : "1"
+        }
+    ],
+    "Blueprints" : {
+        "blueprint_name" : "singlenode",
+        "stack_name" : "HDP",
+        "stack_version" : "3.0"
+    }
+}
