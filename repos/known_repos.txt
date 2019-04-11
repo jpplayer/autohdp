@@ -42,3 +42,8 @@ hdp     3.0.0.0-1146 centos7 http://s3.amazonaws.com/dev.hortonworks.com/HDP/cen
 ambari  2.7.0.0-703 centos7 http://private-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.7.0.0-703/ambari.repo	dev
 hdp     3.0.0-1485 centos7 http://private-repo-1.hortonworks.com/HDP/centos7/3.x/updates/3.0.0.0-1485/hdp.repo   2.7.0.0-703 1.1.0.22	dev
 hdp-gpl	3.0.0-1485	centos7	http://private-repo-1.hortonworks.com/HDP-GPL/centos7/3.x/updates/3.0.0.0-1485/hdp.gpl.repo	dev
+
+ambari	2.7.3.0	centos7	http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.7.3.0/ambari.repo
+hdp	3.1.0.0	centos7	http://public-repo-1.hortonworks.com/HDP/centos7/3.x/updates/3.1.0.0/hdp.repo	2.7.3.0	1.1.0.22
+hdp-gpl	3.1.0.0	centos7	http://public-repo-1.hortonworks.com/HDP-GPL/centos7/3.x/updates/3.1.0.0/hdp.gpl.repo
+
