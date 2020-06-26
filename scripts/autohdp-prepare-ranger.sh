@@ -2,6 +2,9 @@
 
 # In HDP-Utils
 yum -y install mariadb-server mysql-connector-java
+
+systemctl is-active --quiet mariadb && { echo "mariadb is running. Skipping installation."; exit 0; }
+
 systemctl start mariadb
 systemctl enable mariadb
 

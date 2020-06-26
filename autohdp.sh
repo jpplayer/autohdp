@@ -204,7 +204,12 @@ yum -y install epel-release
 
 # Prepare blueprints
 type jq > /dev/null 2>&1 || yum -y install jq
-scripts/autohdp-generate-blueprints.sh -n "${CLUSTERNAME}" -r "$REALM" -k "$KDC" -v "$HDP_VERSION_SHORT" -a "$AMBARI_VERSION_SHORT" -u "$KDC_PRINC" -p "$KDC_PASS" ${SECURITY_OPT} singlenode
+BLUEPRINT=singlenode
+#Use the HDP3 Blueprint
+if [[ "$HDP_VERSION_SHORT" =~ "3" ]]; then
+BLUEPRINT=singlenode.hdp3
+fi
+scripts/autohdp-generate-blueprints.sh -n "${CLUSTERNAME}" -r "$REALM" -k "$KDC" -v "$HDP_VERSION_SHORT" -a "$AMBARI_VERSION_SHORT" -u "$KDC_PRINC" -p "$KDC_PASS" ${SECURITY_OPT} ${BLUEPRINT}
 
 # Show values to user and prompt to continue
 echo "FQDN=$FQDN"
@@ -213,6 +218,7 @@ echo "HDPREPO=$HDPREPO"
 echo "HDPGPLREPO=$HDPGPLREPO"
 echo "CLUSTERNAME=$CLUSTERNAME"
 echo "EXTERNAL KDC=$KDC_EXTERNAL"
+echo "BLUEPRINT=$BLUEPRINT"
 echo "SECURITY=$SECURITY"
 echo "REALM=$REALM"
 echo "KDC=$KDC"
@@ -390,7 +396,7 @@ done
 
 # TODO: make util version dynamic not static
 # Install cluster
-scripts/autohdp-install-cluster.sh singlenode "${CLUSTERNAME}" "$HDP_VERSION_SHORT" "$HDP_UTILS_VERSION"
+scripts/autohdp-install-cluster.sh "${BLUEPRINT}" "${CLUSTERNAME}" "$HDP_VERSION_SHORT" "$HDP_UTILS_VERSION"
 
 echo ""
 echo -e "Ambari is reachable at \033[1mhttp://${AMBARI_SERVER}:8080\033[0m (admin/admin)"
