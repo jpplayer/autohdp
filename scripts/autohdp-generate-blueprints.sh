@@ -48,6 +48,13 @@ if [[ $SECURITY == "false" ]]; then
 SECURITY_TYPE="NONE"
 fi
 
+
+#Use the HDP3 Blueprint                       
+if [[ "$HDP_VERSION_SHORT" =~ "3" ]]; then    
+BLUEPRINT_BASE=${BLUEPRINT_BASE}.hdp3         
+fi                                            
+                                              
+
 mkdir -p "$DIR/../tmp"
 python "$DIR/autohdp-generate-blueprints.py" \
   "$DIR/../blueprints/${BLUEPRINT_BASE}.blueprint" \

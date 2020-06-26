@@ -32,7 +32,6 @@ elif [[ "$OS" == "centos7" ]]; then
 OS=redhat7
 fi
 
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 function runcommand() {

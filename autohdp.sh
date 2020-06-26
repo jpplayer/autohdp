@@ -6,7 +6,7 @@ ME=${0##*/}
 AMBARIREPOEX="http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.6.2.2/ambari.repo"
 HDPREPOEX="http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.5.0/hdp.repo"
 HDPGPLREPOEX="http://public-repo-1.hortonworks.com/HDP-GPL/centos7/2.x/updates/2.6.5.0/hdp.gpl.repo"
-LATEST_HDP="2.6"
+LATEST_HDP="3.1"
 
 KNOWN_REPOS=repos/known_repos.txt
 ENV_VARIABLES=tmp/variables.sh
@@ -238,21 +238,6 @@ yum -y install jq pdsh yum-utils wget httpd createrepo expect
 service iptables stop
 setenforce 0
 
-# Install Kerberos if not external. This is a good test that the system is working.
-echo "AUTOHDP: Setting up Kerberos."
-scripts/autohdp-kerberos.sh "$REALM" "$KDC" "$KDC_EXTERNAL"
-echo "AUTODHP: Kerberos installation complete."
-
-# Only install LDAP if we are using a local KDC
-if [[ "$KDC_EXTERNAL" == "false" ]]; then
-echo "AUTOHDP: Setting up OpenLDAP."
-scripts/autohdp-openldap.sh "$REALM" "$KDC"
-echo "AUTOHDP: OpenLDAP installation complete."
-# Bind the node to LDAP and KDC for SSH and identity management
-echo "AUTOHDP: Joining node to LDAP and KDC domain"
-scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
-fi
-
 if [[ "$LOCALREPO" == "true" ]]; then 
 # Create local repository for Ambari, HDP and JDK if requested, and configure /etc/yum.repos.d/ambari.repo
 # Also creates a local repo for misc files like BerkeleyDB jar for Falcon.
@@ -271,6 +256,21 @@ fi
 
 # Generate repo snippets in JSON format for Ambari
 scripts/autohdp-ambari-repos.sh "$HDPREPO" "$HDPGPLREPO"
+
+# Install Kerberos if not external. This is a good test that the system is working.
+echo "AUTOHDP: Setting up Kerberos."
+scripts/autohdp-kerberos.sh "$REALM" "$KDC" "$KDC_EXTERNAL"
+echo "AUTODHP: Kerberos installation complete."
+
+# Only install LDAP if we are using a local KDC
+if [[ "$KDC_EXTERNAL" == "false" ]]; then
+echo "AUTOHDP: Setting up OpenLDAP."
+scripts/autohdp-openldap.sh "$REALM" "$KDC"
+echo "AUTOHDP: OpenLDAP installation complete."
+# Bind the node to LDAP and KDC for SSH and identity management
+echo "AUTOHDP: Joining node to LDAP and KDC domain"
+scripts/utils/join-node-ldap-kdc.sh "$REALM" "$KDC"
+fi
 
 AMBARI_SERVER="$FQDN"
 

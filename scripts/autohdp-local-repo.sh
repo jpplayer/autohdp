@@ -85,8 +85,18 @@ sed -i -E 's;\[.*?HDP-[^U].*?\];[hdp];I' /etc/yum.repos.d/hdp.repo
 sed -i -E 's;\[.*?HDP-UTILS.*?\];[hdp-utils];I' /etc/yum.repos.d/hdp.repo
 
 rm -f /etc/yum.repos.d/hdp.gpl.repo
+# Fix the url for versions >= 3.5.0
+if [[ "$HDPGPLREPO" =~ "3.1.5" ]]; then
+BASEURL=`dirname "$HDPGPLREPO"`
+cat > /etc/yum.repos.d/hdp.gpl.repo << EOF
+[hdp-gpl]
+name=HDP-GPL
+baseurl=${BASEURL}
+EOF
+else
 wget "$HDPGPLREPO" -O /etc/yum.repos.d/hdp.gpl.repo
 sed -i -E 's;\[.*?HDP-GPL-[^U].*?\];[hdp-gpl];I' /etc/yum.repos.d/hdp.gpl.repo
+fi
 
 OLDPWD="$PWD"
 service iptables stop
